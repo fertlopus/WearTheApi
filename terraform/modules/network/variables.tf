@@ -4,18 +4,6 @@ variable "vnet_name" {
   default     = "Test-vnet"
 }
 
-variable "resource_group_name" {
-  description = "Name of the Resource Group (RG) for Azure Subscription"
-  type        = string
-  default     = "test-rg"
-}
-
-variable "location" {
-  description = "Azure region for the Resource Group (RG)"
-  type        = string
-  default     = "westeurope"
-}
-
 variable "address_space" {
   description = "Address space for the virtual network"
   type        = list(string)
@@ -27,29 +15,33 @@ variable "subnets" {
   type        = map(string)
 }
 
-variable "tags" {
-  description = "Tags to apply to the resource group for cost centre verification and identification"
-  type        = map(string)
-  default     = {
-    department = "dev"
-    app        = "wearthe"
-    environment= "dev"
-    lead_dev   = "Test"
-    lead_email = "test@test.test"
-  }
+variable "location" {
+  description = "Location"
+  type = string
+  default = "westeurope"
+}
+
+variable "resource_group_name" {
+  description = "Name of the resource group"
+  type        = string
 }
 
 variable "security_rules" {
-  description = "Map of security rules"
-  type = map(object({
-    priority                     = number
-    direction                    = string
-    access                       = string
-    protocol                     = string
-    source_port_range            = string
-    destination_port_range       = string
-    source_address_prefix        = string
-    destination_address_prefix   = string
+  description = "Security rules for network security group"
+  type        = map(object({
+    priority                   = number
+    direction                  = string
+    access                     = string
+    protocol                   = string
+    source_port_range          = string
+    destination_port_range     = string
+    source_address_prefix      = string
+    destination_address_prefix = string
   }))
-  default = {}
+}
+
+variable "tags" {
+  description = "Tags to apply to network resources"
+  type        = map(string)
+  default     = {}
 }

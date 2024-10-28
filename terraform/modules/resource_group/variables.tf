@@ -4,32 +4,32 @@ variable "resource_group_name" {
   default     = "test-rg"
 }
 
+variable "tags" {
+  description = "Tags to apply to the resource group for cost centre verification and identification"
+  type        = map(string)
+  default = {
+    department  = "dev"
+    app         = "wearthe"
+    environment = "dev"
+    lead_dev    = "Test"
+    lead_email  = "test@test.test"
+  }
+}
+
 variable "location" {
-  description = "Azure region for the Resource Group (RG)"
+  description = "Azure region for the resource group"
   type        = string
   default     = "westeurope"
 }
 
-variable "tags" {
-  description = "Tags to apply to the resource group for cost centre verification and identification"
-  type        = map(string)
-  default     = {
-    department = "dev"
-    app        = "wearthe"
-    environment= "dev"
-    lead_dev   = "Test"
-    lead_email = "test@test.test"
-  }
-}
-
 variable "project_name" {
-  description = "Name of the project"
+  description = "Name of the project for tagging"
   type        = string
   default     = "wearthe"
 }
 
 variable "environment" {
-  description = "Environment (dev, staging, prod)"
+  description = "Environment name (e.g., dev, staging, prod)"
   type        = string
   default     = "dev"
 }

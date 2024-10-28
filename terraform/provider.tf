@@ -17,18 +17,13 @@ terraform {
 
 provider "azurerm" {
   features {}
+  subscription_id = ""
 }
 
 variable "project_name" {
   description = "Name of the project"
   type        = string
   default     = "wearthe"
-}
-
-variable "environment" {
-  description = "Environment (dev, staging, prod)"
-  default     = "dev"
-  type        = string
 }
 
 variable "location" {
@@ -40,7 +35,7 @@ variable "location" {
 locals {
   common_tags = {
     Project     = var.project_name
-    Environment = var.environment
+    Environment = "dev"
     ManagedBy   = "Terraform"
   }
 }

@@ -1,11 +1,12 @@
 module "resource_group" {
-  source = "../../modules/resource_group"
-
+  source              = "../../modules/resource_group"
   resource_group_name = "rg-wearthe-dev"
   location            = "westeurope"
-  tags                = {
-                          Environment = "Development"
-                          Project     = "WearThe"
+  project_name        = "WearThe"
+  environment         = "dev"
+  tags = {
+    Environment = "Development"
+    Project     = "WearThe"
   }
 }
 
@@ -32,16 +33,6 @@ module "network" {
       protocol                   = "Tcp"
       source_port_range          = "*"
       destination_port_range     = "22"
-      source_address_prefix      = "*"
-      destination_address_prefix = "*"
-    }
-    "allow-https" = {
-      priority                   = 1002
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "Tcp"
-      source_port_range          = "*"
-      destination_port_range     = "443"
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     }
