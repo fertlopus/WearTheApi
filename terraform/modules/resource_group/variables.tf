@@ -1,7 +1,7 @@
 variable "resource_group_name" {
   description = "Name of the Resource Group (RG) for Azure Subscription"
   type        = string
-  default     = "test"
+  default     = "test-rg"
 }
 
 variable "location" {
@@ -20,4 +20,21 @@ variable "tags" {
     lead_dev   = "Test"
     lead_email = "test@test.test"
   }
+}
+
+variable "vnet_name" {
+  description = "Name of the virtual network"
+  type        = string
+  default     = "Test vnet"
+}
+
+variable "address_space" {
+  description = "Address space for the virtual network"
+  type        = list(string)
+  default     = ["*"]
+}
+
+variable "subnets" {
+  description = "Map of subnet names to address prefixes"
+  type        = map(string)
 }
