@@ -9,3 +9,7 @@ output "nsg_id" {
 output "vnet_gateway_ip" {
   value = azurerm_public_ip.vnet_gateway_public_ip.ip_address
 }
+
+output "vnet_id" {
+  value = azurerm_virtual_network.vnet.id
+}

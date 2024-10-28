@@ -22,19 +22,14 @@ variable "tags" {
   }
 }
 
-variable "vnet_name" {
-  description = "Name of the virtual network"
+variable "project_name" {
+  description = "Name of the project"
   type        = string
-  default     = "Test vnet"
+  default     = "wearthe"
 }
 
-variable "address_space" {
-  description = "Address space for the virtual network"
-  type        = list(string)
-  default     = ["*"]
-}
-
-variable "subnets" {
-  description = "Map of subnet names to address prefixes"
-  type        = map(string)
+variable "environment" {
+  description = "Environment (dev, staging, prod)"
+  type        = string
+  default     = "dev"
 }

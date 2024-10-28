@@ -11,7 +11,7 @@ resource "azurerm_subnet" "subnets" {
   address_prefixes     = [each.value]
   name                 = each.key
   resource_group_name  = var.resource_group_name
-  virtual_network_name = var.vnet_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
 }
 
 resource "azurerm_network_security_group" "nsg" {
@@ -31,6 +31,21 @@ resource "azurerm_network_security_group" "nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+}
+
+resource "azurerm_network_security_rule" "nsg_rules" {
+  for_each                    = var.security_rules
+  name                        = each.key
+  priority                    = each.value.priority
+  direction                   = each.value.direction
+  access                      = each.value.access
+  protocol                    = each.value.protocol
+  source_port_range           = each.value.source_port_range
+  destination_port_range      = each.value.destination_port_range
+  source_address_prefix       = each.value.source_address_prefix
+  destination_address_prefix  = each.value.destination_address_prefix
+  network_security_group_name = var.resource_group_name
+  resource_group_name         = azurerm_network_security_group.nsg.name
 }
 
 resource "azurerm_virtual_network_gateway" "vnet_gateway" {
@@ -54,4 +69,5 @@ resource "azurerm_public_ip" "vnet_gateway_public_ip" {
   location            = var.location
   name                = "${var.vnet_name}-gateway-ip"
   resource_group_name = var.resource_group_name
+  tags                = var.tags
 }
