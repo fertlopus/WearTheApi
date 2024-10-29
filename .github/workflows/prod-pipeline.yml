@@ -1,0 +1,38 @@
+name: Production Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  release:
+    types: [published]
+
+jobs:
+  compliance-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Check for sensitive data
+      uses: zricethezav/gitleaks-action@master
+
+  deploy-production:
+    needs: [compliance-check]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    environment: production
+
+    steps:
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment"
+        # Actual deployment steps will be added later
+
+    - name: Run smoke tests
+      run: |
+        echo "Running smoke tests"
+        # Add smoke tests later
+
+    - name: Monitor deployment
+      run: |
+        echo "Monitoring deployment"
+        # Add monitoring checks later
