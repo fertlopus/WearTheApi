@@ -7,6 +7,16 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+sqlalchemy = "^2.0.36"
+alembic = "^1.13.3"
+asyncpg = "^0.30.0"
+psycopg2-binary = "^2.9.10"
+redis = "^5.2.0"
+python-dotenv = "^1.0.1"
+azure-identity = "^1.19.0"
+azure-keyvault-secrets = "^4.9.0"
+pydantic-settings = "^2.6.1"
+aioredis = "^2.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -15,6 +25,8 @@ fastapi = "^0.115.0"
 uvicorn = "^0.31.0"
 llama-index = "^0.11.16"
 langchain = "^0.3.2"
+pytest = "^8.3.3"
+pytest-cov = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]

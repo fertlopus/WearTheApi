@@ -1,12 +1,9 @@
 from typing import AsyncGenerator
 import aioredis
-import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-# from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import declarative_base
 from config import get_db_settings
-from sqlalchemy import text
 
 settings = get_db_settings()
 
