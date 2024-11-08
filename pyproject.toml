@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["fertlopus <marat.movlamov@icloud.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -27,7 +28,16 @@ llama-index = "^0.11.16"
 langchain = "^0.3.2"
 pytest = "^8.3.3"
 pytest-cov = "^6.0.0"
+black = "^24.10.0"
+flake8 = "^7.1.1"
+pre-commit = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 140
+target-version = ['py310', 'py311', 'py312']
+skip-string-normalization = true
+skip-magic-trailing-comma = true
