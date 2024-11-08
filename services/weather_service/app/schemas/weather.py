@@ -1,4 +1,3 @@
-from trace import Trace
 from typing import Optional
 from pydantic import BaseModel, Field, model_validator
 

@@ -7,8 +7,10 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from dotenv import load_dotenv
 
+
 class Settings(BaseSettings):
     """Weather App settings. Local dev: .env file or Azure Key Vault"""
+
     # "dev" / "staging" or "production"
     ENVIRONMENT: str
 
@@ -60,4 +62,3 @@ def get_settings() -> Settings:
 
 test = get_settings()
 print(test)
-

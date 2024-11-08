@@ -1,7 +1,7 @@
-import logging
 import os
 import sys
 from typing import Dict, Any
+
 
 def setup_logging() -> Dict[str, Any]:
     """Logging configuration settings"""
