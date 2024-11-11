@@ -3,7 +3,7 @@ import aioredis
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import declarative_base
-from config import get_db_settings
+from .config import get_db_settings
 
 settings = get_db_settings()
 
