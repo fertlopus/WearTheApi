@@ -55,7 +55,7 @@ class OpenWeatherService:
             try:
                 async with self.session.get(
                     f"{self.base_url}/{endpoint}",
-                    params={"appid": self.api_key, **params}
+                    params={"appid": self.api_key, **params},
                 ) as response:
                     if response.status == 404:
                         logging.error(f"Unknown location provided that caused the error: {params.get('q', '')}")
@@ -75,12 +75,13 @@ class OpenWeatherService:
                     raise OpenWeatherAPIException(f"Failed to fetch weather data after {retries} attempts.")
                 await asyncio.sleep(backoff_factor * (2 ** attempt) + random.uniform(0, 0.1))
 
-    async def get_current_weather(self, city: str, country_code: Optional[str] = None) -> WeatherResponse:
+    async def get_current_weather(self, city: str, country_code: Optional[str] = None, units: str = "metric") -> WeatherResponse:
         """Get the current weather for a given city and optional country code.
 
         Args:
             city (str): Name of the city
             country_code (Optional[str]): Country code for the city
+            units (str): Metric components (imperial or metric values)
 
         Returns:
             WeatherResponse: The weather data encapsulated in a response object.
@@ -88,23 +89,24 @@ class OpenWeatherService:
         location_query = f"{city},{country_code}" if country_code else city
         response = await self._make_request(
             "weather",
-            {"q": location_query, "units": "metric"}
+            {"q": location_query, "units": units}
         )
         return self._parse_weather_response(response)
 
-    async def get_current_weather_by_coordinates(self, lat: float, lon: float) -> WeatherResponse:
+    async def get_current_weather_by_coordinates(self, lat: float, lon: float, units: str="metric") -> WeatherResponse:
         """Get the current weather for a given latitude and longitude.
 
         Args:
             lat (float): Latitude of the location.
             lon (float): Longitude of the location.
+            units (str): Metric components ("imperial" or "metric" values)
 
         Returns:
             WeatherResponse: The weather data encapsulated in a response object.
         """
         response = await self._make_request(
             "weather",
-            {"lat": str(lat), "lon": str(lon), "units": "metric"}
+            {"lat": str(lat), "lon": str(lon), "units": units}
         )
         return self._parse_weather_response(response)
 
