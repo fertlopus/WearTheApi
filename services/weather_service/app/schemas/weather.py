@@ -46,7 +46,7 @@ class WeatherRequest(BaseModel):
             raise ValueError("Request need whether the city (with optional country code) or both lat and lon.")
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "examples": [
                 {"city": "Warsaw", "country_code": "PL"},
                 {"latitude": 52.2297, "longitude": 21.0122}

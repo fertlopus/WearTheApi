@@ -1,5 +1,6 @@
 from functools import lru_cache
 import logging
+from optparse import Option
 from typing import Optional
 from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl
@@ -21,6 +22,8 @@ class Settings(BaseSettings):
     # OpenWeather API
     OPENWEATHER_API_KEY: Optional[str] = None
     OPENWEATHER_API_URL: AnyHttpUrl
+    OPENWEATHER_API_RETRIES: int
+    OPENWEATHER_BACKOFF_FACTOR: Optional[float] = None
 
     # Redis Cache
     REDIS_HOST: str
@@ -58,7 +61,3 @@ def get_settings() -> Settings:
     settings = Settings()
     settings.load_secrets_from_key_vault()
     return settings
-
-
-test = get_settings()
-print(test)
