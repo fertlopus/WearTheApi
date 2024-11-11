@@ -145,10 +145,10 @@ class OpenWeatherService:
             sunset=response["sys"]["sunset"],
         )
 
-async def main():
-    async with OpenWeatherService() as weather_service:
-        weather = await weather_service.get_current_weather_by_coordinates(lat=52.2297, lon=21.0122)
-        pprint(weather)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# async def main():
+#     async with OpenWeatherService() as weather_service:
+#         weather = await weather_service.get_current_weather_by_coordinates(lat=52.2297, lon=21.0122)
+#         pprint(weather)
+#
+# if __name__ == "__main__":
+#     asyncio.run(main())
