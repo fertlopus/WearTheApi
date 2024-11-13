@@ -5,6 +5,8 @@ from fastapi import HTTPException
 from .services.openweather import OpenWeatherService
 from .config import get_settings
 from .logging_config import setup_logging
+from contextlib import asynccontextmanager
+
 
 # Logging Configuration
 logging.config.dictConfig(setup_logging())
@@ -14,6 +16,7 @@ settings = get_settings()
 # Redis connection (singleton)
 redis = None
 
+@asynccontextmanager
 async def get_weather_service() -> AsyncGenerator[OpenWeatherService, None]:
     """Dependency for weather service"""
     service = OpenWeatherService()
