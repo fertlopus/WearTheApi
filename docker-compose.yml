@@ -3,10 +3,8 @@ version: "3.8"
 services:
   postgres:
     image: postgres:13-alpine
-    environment:
-      - POSTGRES_USER=wearthe_user
-      - POSTGRES_PASSWORD=development_password
-      - POSTGRES_DB=wearthe_dev
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
@@ -19,9 +17,8 @@ services:
 
   redis:
     image: redis:alpine
-    environment:
-      - REDIS_HOST=localhost
-      - REDIS_PASSWORD=passwrod
+    env_file:
+      - .env
     ports:
       - "6379:6379"
     volumes:
@@ -31,6 +28,24 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  weather_service:
+    build:
+      context: ./services/weather_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./services/weather_service:/app
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:
