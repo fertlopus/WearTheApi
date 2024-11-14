@@ -7,9 +7,9 @@ from typing import Optional
 from datetime import datetime
 from fastapi import BackgroundTasks
 from pydantic import BaseModel
-from ..services.openweather import OpenWeatherService
-from ..schemas.weather import WeatherResponse
-from ..core.exceptions import WeatherServiceException
+from app.services.openweather import OpenWeatherService
+from app.schemas.weather import WeatherResponse
+from app.core.exceptions import WeatherServiceException
 
 
 logger = logging.getLogger(__name__)

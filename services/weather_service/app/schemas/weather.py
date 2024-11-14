@@ -32,16 +32,16 @@ class WeatherRequest(BaseModel):
     longitude: Optional[float] = Field(None, description="Longitude for location")
 
     @model_validator(mode="before")
-    def check_location(self):
+    def check_location(cls, values):
         """
         Validates in XOR that either:
         - city and optionally country_code are provided, OR
         - latitude and longitude are provided
         """
-        if self.city:
-            return self
-        elif self.latitude is not None and self.longitude is not None:
-            return self
+        if values.get("city"):
+            return values
+        elif values.get("latitude") is not None and values.get("longitude") is not None:
+            return values
         else:
             raise ValueError("Request need whether the city (with optional country code) or both lat and lon.")
 

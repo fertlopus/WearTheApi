@@ -1,6 +1,5 @@
 from functools import lru_cache
 import logging
-from optparse import Option
 from typing import Optional
 from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl
@@ -38,9 +37,9 @@ class Settings(BaseSettings):
 
     def load_secrets_from_key_vault(self):
         """Load secrets from Azure Key Vault if in prod"""
-        if self.ENVIRONMENT == "production" and self.AZURE_KEY_VAULT_URL:
+        if self.ENVIRONMENT == "production" and self.AZURE_KEYVAULT_URL:
             credential = DefaultAzureCredential()
-            client = SecretClient(vault_url=self.AZURE_KEY_VAULT_URL, credential=credential)
+            client = SecretClient(vault_url=self.AZURE_KEYVAULT_URL, credential=credential)
             for field in self.model_fields:
                 if not getattr(self, field):
                     try:
@@ -58,6 +57,7 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=256)
 def get_settings() -> Settings:
+    load_dotenv()
     settings = Settings()
     settings.load_secrets_from_key_vault()
     return settings

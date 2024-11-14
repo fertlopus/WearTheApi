@@ -1,14 +1,12 @@
 import random
-from pprint import pprint
 import aiohttp
 import asyncio
 import logging
 from typing import Dict, Optional
-from datetime import datetime
 
-from ..core.exceptions import OpenWeatherAPIException, WeatherDataNotFoundException
-from ..config import get_settings
-from ..schemas.weather import WeatherResponse
+from app.core.exceptions import OpenWeatherAPIException, WeatherDataNotFoundException
+from app.config import get_settings
+from app.schemas.weather import WeatherResponse
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -18,15 +16,6 @@ class OpenWeatherService:
         self.api_key = settings.OPENWEATHER_API_KEY
         self.base_url = settings.OPENWEATHER_API_URL
         self.session: Optional[aiohttp.ClientSession] = None
-
-    async def __aenter__(self):
-        """Allows to use with async with ensuring the sessions are properly managed"""
-        self.session = aiohttp.ClientSession()
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Allows to use with async with ensuring the sessions are properly managed"""
-        await self.close()
 
     async def get_session(self) -> aiohttp.ClientSession:
         """Get or create aiohttp session. Standard/Custom way."""
@@ -53,39 +42,31 @@ class OpenWeatherService:
 
         for attempt in range(retries):
             try:
-                async with self.session.get(
-                    f"{self.base_url}/{endpoint}",
-                    params={"appid": self.api_key, **params},
-                ) as response:
-                    if response.status == 404:
-                        logging.error(f"Unknown location provided that caused the error: {params.get('q', '')}")
-                        raise WeatherDataNotFoundException(params.get("q", "unknown location"))
-                    response.raise_for_status()
-                    data = await response.json()
-                    # Data validation
-                    if 'main' not in data or 'weather' not in data:
-                        logger.error(f"Unsuccessful data validation, 'main' or weather 'keys' were not found.")
-                        raise OpenWeatherAPIException("Incomplete data received from OpenWeather API call.")
-                    return data
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(
+                        f"{self.base_url}/{endpoint}",
+                        params={"appid": self.api_key, **params},
+                    ) as response:
+                        if response.status == 404:
+                            logger.error(f"Unknown location provided that caused the error: {params.get('q', '')}")
+                            raise WeatherDataNotFoundException(params.get("q", "unknown location"))
+                        response.raise_for_status()
+                        data = await response.json()
+                        # Data validation
+                        if 'main' not in data or 'weather' not in data:
+                            logger.error(f"Unsuccessful data validation, 'main' or 'weather' keys were not found.")
+                            raise OpenWeatherAPIException("Incomplete data received from OpenWeather API call.")
+                        return data
             except (aiohttp.ClientError, aiohttp.ClientResponseError,
                     aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
-                logging.error(f"Error in request processing from OpenWeather API: {str(e)}")
-                logging.error(f"Request failed (attempt {attempt + 1} / {retries} for {endpoint} with params {params}: {str(e)}")
+                logger.error(f"Error in request processing from OpenWeather API: {str(e)}")
+                logger.error(f"Request failed (attempt {attempt + 1}/{retries}) for {endpoint} with params {params}: {str(e)}")
                 if attempt == retries - 1:
                     raise OpenWeatherAPIException(f"Failed to fetch weather data after {retries} attempts.")
                 await asyncio.sleep(backoff_factor * (2 ** attempt) + random.uniform(0, 0.1))
 
     async def get_current_weather(self, city: str, country_code: Optional[str] = None, units: str = "metric") -> WeatherResponse:
-        """Get the current weather for a given city and optional country code.
-
-        Args:
-            city (str): Name of the city
-            country_code (Optional[str]): Country code for the city
-            units (str): Metric components (imperial or metric values)
-
-        Returns:
-            WeatherResponse: The weather data encapsulated in a response object.
-        """
+        """Get the current weather for a given city and optional country code."""
         location_query = f"{city},{country_code}" if country_code else city
         response = await self._make_request(
             "weather",

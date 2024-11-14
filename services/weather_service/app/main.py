@@ -5,10 +5,13 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from .core.exceptions import (OpenWeatherAPIException,
                               WeatherDataNotFoundException)
-from typing import AsyncGenerator
+from typing import AsyncGenerator, AsyncContextManager
 import logging
-from api.v1 import routes
-from .config import get_settings
+from app.api.v1 import routes
+from app.config import get_settings
+from app.dependencies import get_redis, get_weather_service
+from app.services.cache_service import WeatherCacheService
+
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -16,8 +19,16 @@ logger = logging.getLogger(__name__)
 
 async def app_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("Starting up Weather Service")
-    yield
-    logger.info("Shutting down Weather Service")
+    redis = await get_redis()
+    weather_service = await get_weather_service()
+    cache_service = WeatherCacheService(redis, weather_service)
+    app.state.cache_service = cache_service
+    await cache_service.start_background_task()
+    yield  # Application is running
+
+    logger.info("Shutting Down Weather Service")
+    await cache_service.stop_background_refresh()
+    await redis.close()
 
 app = FastAPI(
     title=settings.WEATHER_API_PROJECT_NAME,
@@ -81,12 +92,3 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # routes
 app.include_router(routes.router, prefix=settings.API_V1_STR)
-
-@app.on_event("startup")
-async def startup_event() -> None:
-    logger.info("Starting up Weather Service")
-
-@app.on_event("shutdown")
-async def shutdown_event() -> None:
-    logger.info("Shutting down Weather Service")
-
