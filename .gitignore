@@ -191,3 +191,4 @@ dmypy.json
 .DS_Store
 .terraform
 *tfvars
+!/scripts/manage_db.py
