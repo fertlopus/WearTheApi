@@ -117,19 +117,12 @@ class OpenWeatherService:
             pressure=response["main"]["pressure"],
             description=response["weather"][0]["description"],
             weather_group=response["weather"][0]["main"],
+            weather_id=response["weather"][0]["id"],
             wind_speed=response["wind"]["speed"],
             rain=rain,
             snow=snow,
             date=response["dt"],
             timestamp=response["dt"],
             sunrise=response["sys"]["sunrise"],
-            sunset=response["sys"]["sunset"],
+            sunset=response["sys"]["sunset"]
         )
-
-# async def main():
-#     async with OpenWeatherService() as weather_service:
-#         weather = await weather_service.get_current_weather_by_coordinates(lat=52.2297, lon=21.0122)
-#         pprint(weather)
-#
-# if __name__ == "__main__":
-#     asyncio.run(main())
