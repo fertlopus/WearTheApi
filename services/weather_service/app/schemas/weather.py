@@ -15,6 +15,7 @@ class WeatherBase(BaseModel):
     rain: Optional[float] = Field(None, description="Rain volume aka precipitation mm/h per 1h")
     snow: Optional[float] = Field(None, description="Snow volume aka precipitation mm/h per 1 h")
     date: int = Field(..., description="The date of the weather prediction")
+    weather_id: int = Field(..., description="Weather ID for conditions, e.g. Cloudy, Rainy and etc.")
 
 
 class WeatherResponse(WeatherBase):
