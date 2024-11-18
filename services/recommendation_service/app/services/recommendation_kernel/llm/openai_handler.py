@@ -22,13 +22,14 @@ class OpenAIHandler(LLMHandler):
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def generate_recommendations(self, context: Dict[str, Any], weather_context: Dict[str, Any],
-                                       temperature: float = 0.3) -> str:
+                                       temperature: float = 0.3):
         try:
-            response = await self.chain.arun(
-                weather=weather_context,
-                assets=context["assets"],
-                style_preferences=context["style_preferences"]
-            )
+            self.llm.temperature = temperature
+            response = await self.chain.acall({
+                "weather": context["weather"],
+                "assets": context["assets"],
+                "style_preferences": context["style_preferences"]
+            })
             return response
         except Exception as e:
             raise LLMException(f"Failed to generate response recommendations: {str(e)}")
