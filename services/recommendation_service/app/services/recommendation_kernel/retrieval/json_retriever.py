@@ -80,7 +80,7 @@ class JsonAssetRetriever(BaseRetriever):
         # using them
         try:
             # Temperature check
-            if not ((asset.temp_range.temperature_min <= weather.temperature) or (weather.temperature <= asset.temp_range.temperature_max)):
+            if not (asset.temp_range.temperature_min <= weather.temperature <= asset.temp_range.temperature_max):
                 return False
             # Weather condition check (normalize descriptions)
             if not any(cond in weather.description.weather_group.lower() for cond in asset.condition):
