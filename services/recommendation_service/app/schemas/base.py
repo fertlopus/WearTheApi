@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Optional
 
 
 class OutfitPart(str, Enum):
@@ -18,13 +17,14 @@ class Gender(str, Enum):
     OTHER = "other"
 
 
-class WeatherCondition(str, Enum):
-    """Enumeration of possible weather conditions"""
-    THUNDERSTORM = "thunderstorm"
-    DRIZZLE = "drizzle"
+class WeatherDescription(str, Enum):
+    """Standardized weather descriptions"""
+    CLEAR_SKY = "clear sky"
+    FEW_CLOUDS = "few clouds"
+    SCATTERED_CLOUDS = "scattered clouds"
+    BROKEN_CLOUDS = "broken clouds"
+    SHOWER_RAIN = "shower rain"
     RAIN = "rain"
+    THUNDERSTORM = "thunderstorm"
     SNOW = "snow"
     MIST = "mist"
-    CLEAR = "clear"
-    CLOUDS = "clouds"
-    EXTREME = "extreme"

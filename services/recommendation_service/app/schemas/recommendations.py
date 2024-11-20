@@ -20,11 +20,12 @@ class OutfitRecommendation(BaseModel):
 
 
     @model_validator(mode="after")
-    def validate_outfit_composition(cls, values) -> 'OutfitRecommendation':
-        """Validate that the outfit has at least required pieces"""
-        top, bottom = values.get("top"), values.get("bottom")
-        if not top and not bottom:
-            raise ValueError("At least 'top' or 'bottom' must be provided")
+    def validate_essential_parts(cls, values):
+        """Ensure all essential outfit parts are included"""
+        if not values.bottom:
+            raise ValueError("Outfit recommendation must include a bottom (e.g., pants, skirt).")
+        if not values.footwear:
+            raise ValueError("Outfit recommendation must include footwear.")
         return values
 
 
@@ -37,6 +38,6 @@ class RecommendationResponse(BaseModel):
 
     @model_validator(mode="after")
     def validate_recommendations(cls, values) -> 'RecommendationResponse':
-        if not 1 <= len(values.get("recommendations")) <= 10:
+        if not 1 <= len(values.recommendations) <= 10:
             raise ValueError("Number of recommendations must be between 1 and 10")
         return values

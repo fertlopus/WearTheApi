@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
+from pydantic import model_validator
 
 
 class WeatherData(BaseModel):
@@ -15,8 +16,8 @@ class WeatherData(BaseModel):
     wind_speed: float = Field(..., description="Wind speed in meter/sec")
     rain: Optional[float] = Field(None, description="Rain volume aka precipitation mm/h per 1h")
     snow: Optional[float] = Field(None, description="Snow volume aka precipitation mm/h per 1 h")
-    date: int = Field(..., description="The date of the weather prediction")
-    weather_id: int = Field(..., description="Weather ID for conditions, e.g. Cloudy, Rainy and etc.")
+    date: Optional[int] = Field(None, description="The date of the weather prediction")  # Made optional
+    weather_id: Optional[int] = Field(None, description="Weather condition ID")  # Made optional
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 
@@ -27,6 +28,17 @@ class WeatherConditions(BaseModel):
     wind_speed: Optional[float] = Field(0.0, description="Wind speed")
     rain: Optional[float] = Field(0.0, description="Rain volume")
     snow: Optional[float] = Field(0.0, description="Snow volume")
+    location: str = Field(..., description="Location name")
+    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp of weather reading")
+
+    @model_validator(mode='after')
+    def validate_precipitation(self) -> 'WeatherConditions':
+        """Validate that rain and snow are not present simultaneously"""
+        if (self.rain or 0) > 0 and (self.snow or 0) > 0:
+            raise ValueError(
+                "Cannot have both rain and snow precipitation simultaneously"
+            )
+        return self
 
     class Config:
         use_enum_values = True
