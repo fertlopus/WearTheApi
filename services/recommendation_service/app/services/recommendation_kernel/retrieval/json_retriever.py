@@ -22,11 +22,17 @@ class JsonAssetRetriever(BaseRetriever):
     async def initialize(self) -> None:
         """Reload assets from JSON"""
         try:
+            if not self.asset_path.exists():
+                raise FileNotFoundError(f"Asset file not found: {self.asset_path}")
+
             with open(self.asset_path) as f:
                 raw_assets = json.load(f)
+
+            # Convert raw assets to AssetItem objects using Pydantic's alias support
             self._assets = [AssetItem(**asset) for asset in raw_assets]
             self._asset_index = {asset.asset_name: asset for asset in self._assets}
             logger.info(f"Loaded {len(self._assets)} assets successfully")
+
         except Exception as e:
             logger.error(f"Failed to refresh assets: {str(e)}")
             raise AssetRetrievalException(f"Failed to refresh asset database: {str(e)}")
@@ -36,35 +42,59 @@ class JsonAssetRetriever(BaseRetriever):
         """Retrieve assets based on weather conditions and filters"""
         try:
             filtered_assets = []
+
             for asset in self._assets:
                 if self._matches_weather_conditions(asset, weather_conditions):
                     if filters and not self._matches_filters(asset, filters):
                         continue
                     filtered_assets.append(asset)
+
             logger.debug(f"Retrieved {len(filtered_assets)} assets matching conditions")
             return filtered_assets
+
         except Exception as e:
             logger.error(f"Error retrieving assets: {str(e)}")
             raise AssetRetrievalException(f"Failed to retrieve assets: {str(e)}")
 
+    async def refresh_assets(self) -> None:
+        """Refresh assets from the JSON file"""
+        try:
+            if not self.asset_path.exists():
+                raise FileNotFoundError(f"Asset file not found: {self.asset_path}")
+
+            with open(self.asset_path) as f:
+                raw_assets = json.load(f)
+
+            self._assets = [AssetItem(**asset) for asset in raw_assets]
+            self._asset_index = {asset.asset_name: asset for asset in self._assets}
+            logger.info(f"Loaded {len(self._assets)} assets successfully")
+
+        except Exception as e:
+            logger.error(f"Failed to refresh assets: {str(e)}")
+            raise FileNotFoundError(f"Failed to refresh asset database: {str(e)}")
+
     def _matches_weather_conditions(self, asset: AssetItem, weather: WeatherConditions) -> bool:
         """Check if asset matches weather conditions"""
-        # Temperature check
-        if not (asset.temp_range.temperature_min <= weather.temperature <= asset.temp_range.temperature_max):
+        # TODO: Add additional fit-checks for better recommendations and retrieval process and check the logic overall
+        # FYI: I have implemented more agnostic and flexible filters in filters.py after some iterations move towards
+        # using them
+        try:
+            # Temperature check
+            if not ((asset.temp_range.temperature_min <= weather.temperature) or (weather.temperature <= asset.temp_range.temperature_max)):
+                return False
+            # Weather condition check (normalize descriptions)
+            if not any(cond in weather.description.weather_group.lower() for cond in asset.condition):
+                return False
+            # Rain check
+            if weather.rain > 0 and asset.rain == "no":
+                return False
+            # Snow check
+            if weather.snow > 0 and asset.snow == "no":
+                return False
+            return True
+        except Exception as e:
+            logger.error(f"Error in matching weather conditions: {str(e)}")
             return False
-        # Weather condition check
-        if weather.description not in asset.condition:
-            return False
-        # Wind check
-        if weather.wind_speed > 0 and asset.wind == "no":
-            return False
-        # Rain check
-        if weather.rain > 0 and asset.rain == "no":
-            return False
-        # Snow check
-        if weather.snow > 0 and asset.snow == "no":
-            return False
-        return True
 
     async def get_asset_by_name(self, asset_name: str) -> Optional[AssetItem]:
         """Get specific asset by name"""
