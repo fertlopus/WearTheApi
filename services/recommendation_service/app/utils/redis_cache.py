@@ -6,7 +6,6 @@ from redis.asyncio import Redis
 logger = logging.getLogger(__name__)
 
 class AsyncRedisCache:
-    """Asynchronous Redis cache implementation."""
     def __init__(self, redis_client: Redis, prefix: str = "recommendation_service:"):
         self.redis = redis_client
         self.prefix = prefix
@@ -38,3 +37,8 @@ class AsyncRedisCache:
         except Exception as e:
             logger.error(f"Cache delete error for key {key}: {str(e)}")
             raise ValueError(f"Failed to delete from cache: {str(e)}")
+
+    async def close(self) -> None:
+        """Close Redis connection."""
+        if hasattr(self.redis, 'close'):
+            await self.redis.close()

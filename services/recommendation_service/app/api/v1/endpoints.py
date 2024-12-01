@@ -1,10 +1,10 @@
-from typing import Dict, Any, Optional, List
-from fastapi import APIRouter, Depends, Query
+from typing import Optional, List
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from ...schemas.recommendations import RecommendationResponse
-from ...schemas.weather import WeatherConditions
-from ...services.recommendation_kernel.engine import RecommendationEngine
-from ...dependencies import get_recommendation_engine
+from app.schemas.recommendations import RecommendationResponse
+from app.schemas.weather import WeatherConditions
+from app.services.recommendation_kernel.engine import RecommendationEngine
+from app.dependencies import get_recommendation_engine
 
 
 router = APIRouter()

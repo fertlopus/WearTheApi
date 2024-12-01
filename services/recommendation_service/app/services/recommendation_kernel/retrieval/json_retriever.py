@@ -15,13 +15,17 @@ logger = logging.getLogger(__name__)
 class JsonAssetRetriever(BaseRetriever):
     """JSON-based asset retriever"""
     def __init__(self, asset_path: Path):
-        self.asset_path = asset_path
+        self.asset_path = Path(asset_path)
         self._assets: List[AssetItem] = []
         self._asset_index: Dict[str, AssetItem] = {}
 
     async def initialize(self) -> None:
         """Reload assets from JSON"""
         try:
+            logger.debug(f"Attempt to load assets from source: {self.asset_path}")
+            logger.debug(f"Asset path exists: {self.asset_path.exists()}")
+            logger.debug(f"Asset path absolute: {self.asset_path.absolute()}")
+
             if not self.asset_path.exists():
                 raise FileNotFoundError(f"Asset file not found: {self.asset_path}")
 

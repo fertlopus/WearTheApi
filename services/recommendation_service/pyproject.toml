@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "recommendation-service"
+version = "0.1.0"
+description = "Weather Recommendation Service for WearThe application"
+authors = ["WearThe Tech Team"]
+
+[tool.poetry.dependencies]
+openai = "^1.51.0"
+python = "^3.10"
+fastapi = "^0.115.0"
+uvicorn = "^0.31.0"
+aiohttp = "^3.8.1"
+aioredis = "^2.0.1"
+pydantic = "^2.9.2"
+pydantic-settings = "^2.6.1"
+redis = "^5.2.0"
+alembic = "^1.13.3"
+asyncpg = "^0.30.0"
+psycopg2-binary = "^2.9.10"
+sqlalchemy = "^2.0.36"
+azure-identity = "^1.19.0"
+azure-keyvault-secrets = "^4.9.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-asyncio = "^0.15.1"
+pytest-cov = "^2.12.1"
+aioresponses = "^0.7.2"
+pytest-mock = "^3.6.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,4 +1,5 @@
 from functools import lru_cache
+from optparse import Option
 from typing import Optional, Dict, Any
 from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl, field_validator
@@ -21,7 +22,7 @@ class Settings(BaseSettings):
     RECOMMENDATION_API_PROJECT_NAME: str
 
     # Weather Service API endpoint
-    WEATHER_SERVICE_URL: AnyHttpUrl
+    WEATHER_SERVICE_URL: str
     WEATHER_SERVICE_TIMEOUT: int = 10
 
     # Redis Settings
@@ -34,16 +35,19 @@ class Settings(BaseSettings):
     # TODO: LLM Provider agnostic settings, e.g. openai, azure, claude, etc.
     LLM_PROVIDER: str = "openai"
     OPEN_AI_API_KEY: Optional[str] = None
+    OPEN_AI_MODEL: Optional[str] = None
+    OPEN_AI_TEMPERATURE: Optional[float] = 0.25
     AZURE_OPENAI_API_KEY: Optional[str] = None
     AZURE_OPENAI_LLM_ENDPOINT: Optional[str] = None
 
     # Assets Database
     # TODO: Assets source agnostic settings, e.g. json, postgres, mongodb, etc.
     ASSETS_SOURCE: str = "json"
-    ASSETS_PATH: str = "services/recommendation_service/local_data/preprocessed/clothing_data.json"
+    ASSETS_PATH: str = "/app/local_data/preprocessed/clothing_data.json"
 
     # Recommendation Cache TTL
     RECOMMENDATION_CACHE_EXPIRATION: int
+    MAX_RECOMMENDATIONS: int = 5
 
     # Azure Key Vault
     AZURE_KEYVAULT_URL: Optional[str] = None
