@@ -1,5 +1,4 @@
 from functools import lru_cache
-from optparse import Option
 from typing import Optional, Dict, Any
 from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl, field_validator
@@ -48,6 +47,9 @@ class Settings(BaseSettings):
     # Recommendation Cache TTL
     RECOMMENDATION_CACHE_EXPIRATION: int
     MAX_RECOMMENDATIONS: int = 5
+
+    # Recommendation Cache TTL
+    RECOMMENDATION_CACHE_EXPIRATION: int
 
     # Azure Key Vault
     AZURE_KEYVAULT_URL: Optional[str] = None

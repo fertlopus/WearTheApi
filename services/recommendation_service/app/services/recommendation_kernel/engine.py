@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class RecommendationEngine:
     """Orchestrates the recommendation process."""
-    def __init__(self, asset_retriever: JsonAssetRetriever, llm_handler: LLMHandler,
+    def __init__(self, asset_retriever: BaseRetriever, llm_handler: LLMHandler,
                  cache_handler: Optional[Any] = None, max_recommendations: int = 5):
         self.asset_retriever = asset_retriever
         self.llm_handler = llm_handler
@@ -91,6 +91,7 @@ class RecommendationEngine:
             "gender": user_preferences.get("gender", "unisex"),
             "fit_preference": user_preferences.get("fit", "normal")
         }
+
 
     def _process_llm_recommendations(self, llm_output: List[Dict[str, Any]]) -> List[OutfitRecommendation]:
         """Process and validate LLM recommendations."""
