@@ -6,7 +6,7 @@ from ...schemas.recommendations import OutfitRecommendation, RecommendationRespo
 from ...schemas.weather import WeatherConditions
 from ...schemas.assets import AssetItem
 from ...core.exceptions import RecommendationServiceException
-from .retrieval.base import BaseRetriever
+from .retrieval.json_retriever import JsonAssetRetriever
 from .llm.base import LLMHandler
 
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class RecommendationEngine:
     """Orchestrates the recommendation process."""
-    def __init__(self, asset_retriever: BaseRetriever, llm_handler: LLMHandler,
+    def __init__(self, asset_retriever: JsonAssetRetriever, llm_handler: LLMHandler,
                  cache_handler: Optional[Any] = None, max_recommendations: int = 5):
         self.asset_retriever = asset_retriever
         self.llm_handler = llm_handler
@@ -43,15 +43,21 @@ class RecommendationEngine:
                 raise RecommendationServiceException("No suitable assets found for the given conditions")
 
             # Prepare context for LLM
-            context = self._prepare_llm_context(filtered_assets, user_preferences)
-            weather_context = weather_conditions.__dict__
+            assets_json = [item.model_dump_json() for item in filtered_assets]
+            context = {
+                "weather": weather_conditions.model_dump_json(),
+                "assets": assets_json,
+                "style_preferences": user_preferences.get("style_preferences", [])
+            }
 
             # Generate recommendations using LLM
-            llm_recommendations = await self.llm_handler.generate_recommendations(context=context,
-                                                                                  weather_context=weather_context)
+            llm_recommendations = await self.llm_handler.generate_recommendations(
+                context=context,
+                weather_context={}  # TODO: Empty as per future implementation
+            )
 
             # Process and validate recommendations
-            recommendations = self._process_llm_recommendations(llm_recommendations, filtered_assets)
+            recommendations = self._process_llm_recommendations(llm_recommendations)
 
             # Create response
             response = RecommendationResponse(
@@ -86,60 +92,34 @@ class RecommendationEngine:
             "fit_preference": user_preferences.get("fit", "normal")
         }
 
-    def _process_llm_recommendations(self, llm_output: Dict[str, Any],
-                                     available_assets: List[AssetItem]) -> List[OutfitRecommendation]:
+    def _process_llm_recommendations(self, llm_output: List[Dict[str, Any]]) -> List[OutfitRecommendation]:
         """Process and validate LLM recommendations."""
-        available_asset_names = {asset.asset_name for asset in available_assets}
         processed_recommendations = []
 
         for rec_item in llm_output:
             try:
-                # Extract the recommendation data - handle both formats
-                rec_key = next(iter(rec_item.keys()))  # e.g., "recommendation_1"
-                rec_data = rec_item[rec_key]
+                # Extract the recommendation data (assuming first item in the list)
+                rec_data = list(rec_item.values())[0][0]
+                description = rec_item.get("description", "Stylish outfit for the weather")
+                weather_score = rec_item.get("weather_appropriate_score", 0.0)
+                style_score = rec_item.get("style_score", 0.0)
 
-                # Handle the nested array structure
-                if isinstance(rec_data, list) and len(rec_data) > 0:
-                    outfit_data = rec_data[0]
-                else:
-                    outfit_data = rec_data
-
-                # Validate outfit pieces
-                outfit_pieces = {
-                    "head": outfit_data.get("head", "N/A"),
-                    "top": outfit_data.get("top"),
-                    "bottom": outfit_data.get("bottom"),
-                    "footwear": outfit_data.get("footwear")
-                }
-
-                # Skip if required pieces are missing or not in available assets
-                required_pieces = {"top", "bottom", "footwear"}
-                for piece in required_pieces:
-                    if not outfit_pieces.get(piece) or \
-                            (outfit_pieces[piece] != "N/A" and
-                             outfit_pieces[piece] not in available_asset_names):
-                        logger.warning(
-                            f"Missing or invalid required piece {piece} in recommendation"
-                        )
-                        continue
-
-                # Create recommendation object
                 recommendation = OutfitRecommendation(
-                    head=None if outfit_pieces["head"] == "N/A" else outfit_pieces["head"],
-                    top=outfit_pieces["top"],
-                    bottom=outfit_pieces["bottom"],
-                    footwear=outfit_pieces["footwear"],
-                    description=rec_item.get("description", "Stylish outfit for the weather"),
-                    weather_appropriate_score=rec_item.get("weather_appropriate_score", 0.8),
-                    style_score=rec_item.get("style_score", 0.8)
+                    head=rec_data.get("head", "N/A"),
+                    top=rec_data.get("top", "N/A"),
+                    bottom=rec_data.get("bottom", "N/A"),
+                    footwear=rec_data.get("footwear", "N/A"),
+                    description=description,
+                    weather_appropriate_score=weather_score,
+                    style_score=style_score
                 )
                 processed_recommendations.append(recommendation)
-
             except Exception as e:
                 logger.error(f"Error processing recommendation: {str(e)}")
                 continue
 
         return processed_recommendations
+
     def _generate_weather_summary(self, weather: WeatherConditions) -> str:
         """Generate a human-readable weather summary."""
         return (
