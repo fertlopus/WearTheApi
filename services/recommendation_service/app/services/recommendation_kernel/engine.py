@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class RecommendationEngine:
     """Orchestrates the recommendation process."""
-    def __init__(self, asset_retriever: BaseRetriever, llm_handler: LLMHandler,
+    def __init__(self, asset_retriever: JsonAssetRetriever, llm_handler: LLMHandler,
                  cache_handler: Optional[Any] = None, max_recommendations: int = 5):
         self.asset_retriever = asset_retriever
         self.llm_handler = llm_handler
