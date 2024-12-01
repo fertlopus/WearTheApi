@@ -12,6 +12,7 @@ class DatabaseSettings(BaseSettings):
     """
     Database configuration settings
     """
+
     ENVIRONMENT: str = "dev"
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -31,18 +32,14 @@ class DatabaseSettings(BaseSettings):
     def postgres_dsn(self) -> str:
         """Generate PostgreSQL DSN as f-string"""
         return (
-            f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
-            f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+            f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}" f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
 
     @property
     def redis_dsn(self) -> str:
         """Generate Redis DSN as f-string"""
         if self.REDIS_PASSWORD:
-            return (
-                f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:"
-                f"{self.REDIS_PORT}/0"
-            )
+            return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:" f"{self.REDIS_PORT}/0"
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/0"
 
     class Config:
@@ -53,6 +50,7 @@ class DatabaseSettings(BaseSettings):
 
 class SecretManager:
     """Manage secrets for local and cloud secrets"""
+
     def __init__(self):
         self.environment = os.getenv("ENVIRONMENT", "dev")
         self.key_vault_url = os.getenv("AZURE_KEYVAULT_URL", "")
@@ -61,10 +59,7 @@ class SecretManager:
             load_dotenv()
         elif self.key_vault_url:
             self.credential = DefaultAzureCredential()
-            self.secret_client = SecretClient(
-                vault_url=self.key_vault_url,
-                credential=self.credential
-            )
+            self.secret_client = SecretClient(vault_url=self.key_vault_url, credential=self.credential)
 
     def get_secret(self, secret_name: str) -> str | ValueError:
         """Get secret from env/KV by name"""
@@ -82,6 +77,7 @@ class SecretManager:
 
         return ValueError("No secret source configured")
 
+
 @lru_cache()
 def get_db_settings() -> DatabaseSettings:
     """Get cached database settings"""
@@ -97,7 +93,7 @@ def get_db_settings() -> DatabaseSettings:
                 POSTGRES_DB=secret_manager.get_secret("POSTGRES_DB"),
                 REDIS_HOST=secret_manager.get_secret("REDIS_HOST"),
                 REDIS_PASSWORD=secret_manager.get_secret("REDIS_PASSWORD"),
-                REDIS_PORT=secret_manager.get_secret("REDIS_PORT")
+                REDIS_PORT=secret_manager.get_secret("REDIS_PORT"),
             )
         except Exception as e:
             raise RuntimeError(f"Failed to initialize database settings: {str(e)}")
