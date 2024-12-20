@@ -191,6 +191,5 @@ dmypy.json
 .DS_Store
 .terraform
 *tfvars
+
 !/scripts/manage_db.py
-/services/recommendation_service/local_data
-/services/recommendation_service/script.py

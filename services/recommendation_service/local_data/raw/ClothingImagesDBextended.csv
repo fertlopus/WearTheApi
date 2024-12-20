@@ -1,0 +1,56 @@
+﻿AssetName,OutfitPart,Color,Style,Gender,Fit,Season,Condition,TempMin,TempMax,Wind,Rain,Snow
+tshirt_001.png,top,black,"casual, classic",male,normal,"spring, summer","clear sky, few clouds, scattered clouds",25,35,yes,no,no
+tshirt_002.png,top,white,"casual, classic",male,normal,"spring, summer","clear sky, few clouds, scattered clouds",25,35,yes,no,no
+tshirt_003.png,top,beige,"casual, classic",male,normal,"spring, summer","clear sky, few clouds, scattered clouds",25,35,yes,no,no
+tshirt_004.png,top,white,"casual, classic",male,normal,"spring, summer","clear sky, few clouds, scattered clouds",35,50,yes,no,no
+tshirt_005.png,top,gray,"casual, classic, sport",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",20,25,yes,no,no
+tshirt_006.png,top,gray,"casual, classic, sport",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",20,25,yes,yes,no
+shirt_001.png,top,black,casual,male,oversize,"autumn, spring, summer","clear sky, few clouds, scattered clouds",20,25,yes,no,no
+shirt_002.png,top,"red, white",casual,male,oversize,"autumn, spring, summer","clear sky, few clouds, scattered clouds",20,25,yes,no,no
+shirt_003.png,top,black,classic,male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",20,25,yes,no,no
+jacket_001.png,top,"black, white",casual,male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,no,no
+jacket_002.png,top,"beige, black",casual,male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,no,no
+jacket_003.png,top,black,"casual, classic",male,normal,"autumn, spring","clear sky, few clouds, scattered clouds",15,20,yes,yes,no
+jacket_004.png,top,black,"casual, classic, sport",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow",-5,10,yes,yes,yes
+jacket_005.png,top,white,"casual, classic, sport",male,normal,winter,"broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",-30,-5,yes,yes,yes
+jacket_006.png,top,brown,"casual, classic, sport",male,normal,"autumn, spring, summer","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",15,20,no,no,no
+jacket_007.png,top,black,"casual, classic",male,normal,"autumn, spring, summer","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",10,15,yes,no,no
+jacket_008.png,top,gray,"casual, classic",male,normal,"autumn, spring, summer","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",10,15,yes,no,no
+jacket_009.png,top,"black, gray","casual, classic, sport",male,normal,"autumn, spring, summer","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",15,20,yes,yes,no
+jacket_010.png,top,"black, gray","casual, classic",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",-5,5,yes,yes,yes
+jumper_001.png,top,black,"casual, sport",male,"normal, oversize","autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,no,no
+jumper_002.png,top,gray,classic,male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,no,no
+jumper_003.png,top,black,"casual, classic",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,no,no
+jumper_004.png,top,gray,"casual, classic, sport",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,no,no
+gilet_001.png,top,black,casual,male,normal,"autumn, spring","clear sky, few clouds, rain, shower rain",15,20,yes,no,no
+gilet_002.png,top,black,"casual, sport",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, scattered clouds",10,15,yes,no,no
+raincoat_001.png,top,black,"casual, sport",male,normal,"autumn, spring","broken clouds, rain, scattered clouds, shower rain",15,20,yes,yes,no
+raincoat_002.png,top,black,"casual, sport",male,normal,"autumn, spring","broken clouds, rain, scattered clouds, shower rain",10,15,yes,yes,no
+coat_001.png,top,black,classic,male,normal,"autumn, spring","broken clouds, clear sky, few clouds, scattered clouds",10,15,yes,no,no
+beanie_001.png,head,black,"casual, classic, sport",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, scattered clouds",0,10,yes,no,yes
+beanie_002.png,head,white,"casual, classic, sport",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, scattered clouds",-30,0,yes,no,yes
+beanie_003.png,head,"beige, gray","casual, sport",male,normal,"autumn, spring, summer, winter","broken clouds, few clouds, scattered clouds",5,15,yes,no,no
+cap_001.png,head,black,"classic, sport",male,normal,"autumn, spring, summer, winter","broken clouds, few clouds, rain, scattered clouds",5,15,yes,yes,no
+cap_002.png,head,"black, white",casual,male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, rain, scattered clouds",15,25,yes,no,no
+glasses_001.png,head,black,"casual, classic, sport",male,normal,"autumn, spring, summer, winter",clear sky,0,50,yes,no,no
+panama_hat_001.png,head,color,"casual, sport",male,normal,"autumn, spring, summer",clear sky,25,50,no,no,no
+shorts_001.png,bottom,color,"casual, sport",male,"normal, oversize",summer,"clear sky, few clouds",25,50,no,no,no
+shorts_002.png,bottom,black,"casual, classic, sport",male,normal,summer,clear sky,20,25,no,no,no
+pants_001.png,bottom,black,"casual, classic",male,normal,"autumn, spring, summer","broken clouds, clear sky, few clouds, scattered clouds",15,25,yes,no,no
+pants_002.png,bottom,black,"casual, classic",male,normal,"autumn, spring, summer","broken clouds, clear sky, few clouds, scattered clouds",15,25,yes,no,no
+pants_003.png,bottom,black,"casual, classic",male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, scattered clouds",-30,5,yes,no,yes
+pants_003.png,bottom,black,"casual, classic",male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, scattered clouds",5,5,yes,yes,no
+jeans_001.png,bottom,blue,"casual, classic, sport",male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, rain, scattered clouds",5,20,yes,no,no
+jeans_002.png,bottom,black,"casual, classic, sport",male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, rain, scattered clouds",5,20,yes,no,no
+jeans_003.png,bottom,blue,"casual, classic, sport",male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, rain, scattered clouds",0,20,yes,yes,yes
+jeans_004.png,bottom,black,"casual, classic",male,normal,"autumn, spring, summer, winter","broken clouds, clear sky, few clouds, rain, scattered clouds",0,20,yes,yes,yes
+boots_001.png,footwear,black,"casual, classic",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",-30,10,yes,yes,yes
+boots_002.png,footwear,brown,"casual, classic",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",-30,10,yes,yes,yes
+boots_003.png,footwear,black,"casual, classic",male,normal,"autumn, spring, winter","broken clouds, clear sky, few clouds, rain, scattered clouds, shower rain, snow, thunderstorm",0,20,yes,yes,yes
+sneakers_001.png,footwear,black,"casual, sport",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",10,20,yes,no,no
+sneakers_002.png,footwear,white,"casual, classic, sport",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",15,20,yes,yes,no
+sneakers_003.png,footwear,white,"classic, sport",male,normal,"autumn, spring, summer","clear sky, few clouds, scattered clouds",20,25,no,yes,no
+sneakers_004.png,footwear,white,"casual, sport",male,normal,"autumn, spring, summer","clear sky, few clouds",25,30,yes,yes,no
+sneakers_005.png,footwear,white,"casual, classic",male,normal,"autumn, spring, summer","clear sky, few clouds",15,25,yes,yes,no
+sneakers_006.png,footwear,white,"casual, classic, sport",male,normal,"autumn, spring, summer","clear sky, few clouds",15,25,yes,no,no
+slippers_001.png,footwear,black,"casual, sport",male,normal,summer,clear sky,25,50,no,no,no
