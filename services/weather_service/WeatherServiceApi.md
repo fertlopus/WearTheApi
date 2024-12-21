@@ -80,6 +80,57 @@ Example of the response:
 }
 ```
 
+3. Get Weather by city name:
+* URL: /api/v1/city/{city}
+* Method: `GET`
+* Requested Body:
+  * *city*: name of the city (required).
+
+```json
+curl -X 'GET' \
+  'http://0.0.0.0:8000/api/v1/weather/city/Warsaw' \
+  -H 'accept: application/json'
+```
+
+URL (localhost):
+```json
+http://0.0.0.0:8000/api/v1/weather/city/Warsaw
+```
+
+Output (Response Body):
+
+```json
+{
+  "temperature": 3.2,
+  "feels_like": -0.84,
+  "temperature_min": 2.6,
+  "temperature_max": 4.24,
+  "humidity": 77,
+  "pressure": 1015,
+  "description": "broken clouds",
+  "weather_group": "Clouds",
+  "wind_speed": 4.85,
+  "rain": 0,
+  "snow": 0,
+  "date": 1734795525,
+  "weather_id": 803,
+  "location": "Warsaw",
+  "country": "PL",
+  "timestamp": 1734795525,
+  "sunrise": 1734763391,
+  "sunset": 1734791106
+}
+```
+
+Response headers:
+
+```json
+content-length: 342 
+ content-type: application/json 
+ date: Sat,21 Dec 2024 15:41:36 GMT 
+ server: uvicorn 
+```
+
 Behavior:
 
 * Cached by **CACHE KEY**: `weather:city:<city>:<country_code>`
