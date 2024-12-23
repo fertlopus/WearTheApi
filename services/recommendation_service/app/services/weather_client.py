@@ -13,7 +13,7 @@ class WeatherClient:
     """Client for interacting with the Weather Service."""
 
     def __init__(self, base_url: str, timeout: int = 10):
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url
         self.timeout = timeout
 
     async def get_weather(self, location: str, country_code: Optional[str] = None) -> WeatherConditions:
@@ -28,21 +28,16 @@ class WeatherClient:
             WeatherConditions object containing current weather data
         """
         try:
-            endpoint = f"{self.base_url}/api/v1/weather"
+            endpoint = f"{self.base_url}api/v1/weather/city/{location}"
+            print(f"Requesting the endpoint: {endpoint}")
 
-            # Prepare request payload
-            payload = {
-                "city": location
-            }
+            # query params if country_code is provided
+            params = {}
             if country_code:
-                payload["country_code"] = country_code
+                params["country_code"] = country_code
 
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                        endpoint,
-                        json=payload,
-                        timeout=self.timeout
-                ) as response:
+            async with (aiohttp.ClientSession() as session):
+                async with session.get(endpoint, params=params, timeout=self.timeout) as response:
                     if response.status != 200:
                         error_detail = await response.text()
                         raise WeatherServiceException(
@@ -50,24 +45,10 @@ class WeatherClient:
                         )
 
                     data = await response.json()
+                    print(f"Weather service returned response: {data}")
 
                     # Create WeatherData object
-                    weather_data = WeatherData(
-                        temperature=data["temperature"],
-                        feels_like=data["feels_like"],
-                        temperature_min=data.get("temperature_min"),
-                        temperature_max=data.get("temperature_max"),
-                        humidity=data["humidity"],
-                        pressure=data["pressure"],
-                        description=data["description"],
-                        weather_group=data["weather_group"],
-                        wind_speed=data["wind_speed"],
-                        rain=data.get("rain", 0.0),
-                        snow=data.get("snow", 0.0),
-                        date=data.get("date"),
-                        weather_id=data.get("weather_id"),
-                        timestamp=datetime.fromtimestamp(data["timestamp"])
-                    )
+                    weather_data = self._map_response_to_weather_data(data)
 
                     # Create and return WeatherConditions
                     return WeatherConditions(
@@ -100,3 +81,23 @@ class WeatherClient:
         except Exception as e:
             logger.error(f"Weather service health check failed: {str(e)}")
             return False
+
+    def _map_response_to_weather_data(self, response_json: dict) -> WeatherData:
+        """Map the raw JSON response with WeatherData Pydantic model."""
+        return WeatherData(
+                        temperature=response_json["temperature"],
+                        feels_like=response_json["feels_like"],
+                        temperature_min=response_json.get("temperature_min"),
+                        temperature_max=response_json.get("temperature_max"),
+                        humidity=response_json["humidity"],
+                        pressure=response_json["pressure"],
+                        description=response_json["description"],
+                        weather_group=response_json["weather_group"],
+                        wind_speed=response_json["wind_speed"],
+                        rain=response_json.get("rain", 0.0),
+                        snow=response_json.get("snow", 0.0),
+                        date=response_json.get("date"),
+                        weather_id=response_json.get("weather_id"),
+                        timestamp=datetime.fromtimestamp(response_json["timestamp"])
+                    )
+

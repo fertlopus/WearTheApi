@@ -23,9 +23,12 @@ class RecommendationEngine:
         self.max_recommendations = max_recommendations
 
     async def get_recommendations(self, weather_conditions: WeatherConditions,
-                                  user_preferences: Dict[str, Any]) -> RecommendationResponse:
+                                  user_preferences: Optional[Dict[str, Any]]) -> RecommendationResponse:
         """Generate outfit recommendations based on weather and user preferences."""
         try:
+            print(f"Weather Conditions: {weather_conditions} in the script engine.py")
+            print(f"User Preferences: {user_preferences} in the script engine.py")
+
             # Check cache if available
             cache_key = self._generate_cache_key(weather_conditions, user_preferences)
             if self.cache_handler:
@@ -41,6 +44,8 @@ class RecommendationEngine:
 
             if not filtered_assets:
                 raise RecommendationServiceException("No suitable assets found for the given conditions")
+
+            print(f"Filtered assets {filtered_assets} in the script engine.py")
 
             # Prepare context for LLM
             assets_json = [item.model_dump_json() for item in filtered_assets]
@@ -76,6 +81,50 @@ class RecommendationEngine:
         except Exception as e:
             logger.error(f"Error generating recommendations: {str(e)}")
             raise RecommendationServiceException(str(e))
+
+    async def get_simple_recommendations(self, weather_conditions: WeatherConditions) -> RecommendationResponse:
+        try:
+            print(f"Weather conditions: {weather_conditions} in script engine.py")
+            await self.asset_retriever.initialize()
+
+            filtered_assets = await self.asset_retriever.retrieve_assets_without_filters(weather_conditions=weather_conditions)
+            if not filtered_assets:
+                raise RecommendationServiceException("No suitable assets found for the given conditions")
+
+            print(f"Len of filtered assets: {len(filtered_assets)} in script engine.py")
+            # Prepare context for LLM
+            assets_json = [item.model_dump_json() for item in filtered_assets]
+
+            context = {
+                "weather": weather_conditions.model_dump_json(),
+                "assets": assets_json,
+                "style_preferences": []  # Empty for now
+            }
+
+            print(f"LLM Context Debug: {context} in script name engine.py")
+
+            # Generate recommendations using LLM
+            llm_recommendations = await self.llm_handler.generate_recommendations(
+                context=context,
+                weather_context={}
+            )
+
+            print(f"LLM Recommendations: {llm_recommendations} in script name enginge.py")
+
+            # Process and validate recommendations
+            recommendations = self._process_llm_recommendations(llm_recommendations)
+
+            return RecommendationResponse(
+                recommendations=recommendations[:self.max_recommendations],
+                weather_summary=self._generate_weather_summary(weather_conditions),
+                style_notes=self._generate_style_notes(recommendations, weather_conditions),
+                generated_at=datetime.utcnow()
+            )
+
+        except Exception as e:
+            logger.error(f"Error generating recommendations: {str(e)}")
+            raise RecommendationServiceException(str(e))
+
 
     def _generate_cache_key(self,weather_conditions: WeatherConditions, user_preferences: Dict[str, Any]) -> str:
         """Generate unique cache key based on input parameters."""

@@ -19,10 +19,12 @@ class RecommendationRequest(BaseModel):
 
 
 @router.post("/recommendations", response_model=RecommendationResponse)
-async def get_recommendations(request: RecommendationRequest,
+async def get_recommendations_complex(request: RecommendationRequest,
                               engine: RecommendationEngine = Depends(get_recommendation_engine)) -> RecommendationResponse:
     """Get outfit recommendations based on weather and user preferences."""
+    print(f"Incoming request: {request}")
     weather_conditions = await engine.weather_client.get_weather(request.location)
+    print(f"Weather Conditions: {weather_conditions}")
 
     user_preferences = {
         "style": request.style_preferences,
@@ -31,6 +33,23 @@ async def get_recommendations(request: RecommendationRequest,
     }
 
     return await engine.get_recommendations(weather_conditions=weather_conditions, user_preferences=user_preferences)
+
+@router.post("/recommendations/simple", response_model=RecommendationResponse)
+async def get_recommendations(location: str, engine: RecommendationEngine = Depends(get_recommendation_engine)) -> RecommendationResponse:
+    """
+    Generate outfit recommendations based on weather conditions.
+    """
+    print(f"Incoming request for location: {location}")
+
+    try:
+        # Fetch weather conditions from the Weather Service
+        weather_conditions = await engine.weather_client.get_weather(location)
+
+        # Generate recommendations
+        recommendations = await engine.get_simple_recommendations(weather_conditions=weather_conditions)
+        return recommendations
+    except Exception as e:
+        print(f"Exception occur: {e}")
 
 
 @router.get("/health")

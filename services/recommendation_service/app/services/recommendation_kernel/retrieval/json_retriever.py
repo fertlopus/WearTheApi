@@ -23,6 +23,7 @@ class JsonAssetRetriever(BaseRetriever):
         """Reload assets from JSON"""
         try:
             logger.debug(f"Attempt to load assets from source: {self.asset_path}")
+            print(f"Attempt to load assets from source: {self.asset_path}")
             logger.debug(f"Asset path exists: {self.asset_path.exists()}")
             logger.debug(f"Asset path absolute: {self.asset_path.absolute()}")
 
@@ -60,6 +61,20 @@ class JsonAssetRetriever(BaseRetriever):
             logger.error(f"Error retrieving assets: {str(e)}")
             raise AssetRetrievalException(f"Failed to retrieve assets: {str(e)}")
 
+    async def retrieve_assets_without_filters(self, weather_conditions: WeatherConditions) -> List[AssetItem]:
+        try:
+            filtered_assets = []
+            for asset in self._assets:
+                if self._matches_weather_conditions(asset, weather_conditions):
+                    filtered_assets.append(asset)
+
+            print(f"Retrieved {len(filtered_assets)} assets matching weather conditions")
+            return filtered_assets
+        except Exception as e:
+            logger.error(f"Error retrieving assets: {str(e)}")
+            raise AssetRetrievalException(f"Failed to retrieve assets: {str(e)}")
+
+
     async def refresh_assets(self) -> None:
         """Refresh assets from the JSON file"""
         try:
@@ -84,16 +99,27 @@ class JsonAssetRetriever(BaseRetriever):
         # using them
         try:
             # Temperature check
-            if not (asset.temp_range.temperature_min <= weather.temperature <= asset.temp_range.temperature_max):
+            if not int(weather.temperature) in range(int(asset.temp_range.temperature_min), int(asset.temp_range.temperature_max)):
+                print(f"Asset {asset.asset_name} failed temperature check. Temp: {weather.temperature}, "
+                             f"Range: {asset.temp_range}")
                 return False
+
             # Weather condition check (normalize descriptions)
-            if not any(cond in weather.description.weather_group.lower() for cond in asset.condition):
-                return False
+            # TODO: mismatches between API weather group: Clouds and our defined e.g. Broken Clouds
+            #if not any(cond in weather.description.weather_group.lower() for cond in asset.condition):
+            #    print(f"Asset {asset.asset_name} failed condition check. "
+            #                 f"Weather Group: {weather.description.weather_group}, Asset Conditions: {asset.condition}")
+            #    return False
+
             # Rain check
             if weather.rain > 0 and asset.rain == "no":
+                print(f"Asset {asset.asset_name} failed rain check. "
+                             f"Rain: {weather.rain}, Asset Rain: {asset.rain}")
                 return False
             # Snow check
             if weather.snow > 0 and asset.snow == "no":
+                print(f"Asset {asset.asset_name} failed snow check. "
+                             f"Snow: {weather.snow}, Asset Snow: {asset.snow}")
                 return False
             return True
         except Exception as e:
