@@ -31,6 +31,7 @@ class OutfitRecommendation(BaseModel):
 
 class RecommendationResponse(BaseModel):
     """Response containing multiple outfit recommendations"""
+    location: Optional[str]
     recommendations: List[OutfitRecommendation] = Field(..., description="Recommendations")
     weather_summary: str = Field(..., description="Summary of the current weather conditions")
     style_notes: str = Field(..., description="Additional styling notes and suggestions")
@@ -38,6 +39,6 @@ class RecommendationResponse(BaseModel):
 
     @model_validator(mode="after")
     def validate_recommendations(cls, values) -> 'RecommendationResponse':
-        if not 1 <= len(values.recommendations) <= 10:
+        if not 1 <= len(values.recommendations) <= 5:
             raise ValueError("Number of recommendations must be between 1 and 10")
         return values

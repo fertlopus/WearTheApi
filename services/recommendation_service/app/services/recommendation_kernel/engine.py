@@ -1,7 +1,11 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import logging
+import json
 import hashlib
+from fastapi.encoders import jsonable_encoder
+from pydantic.v1.json import pydantic_encoder
+
 from ...schemas.recommendations import OutfitRecommendation, RecommendationResponse
 from ...schemas.weather import WeatherConditions
 from ...schemas.assets import AssetItem
@@ -26,16 +30,9 @@ class RecommendationEngine:
                                   user_preferences: Optional[Dict[str, Any]]) -> RecommendationResponse:
         """Generate outfit recommendations based on weather and user preferences."""
         try:
+            await self.asset_retriever.initialize()
             print(f"Weather Conditions: {weather_conditions} in the script engine.py")
             print(f"User Preferences: {user_preferences} in the script engine.py")
-
-            # Check cache if available
-            cache_key = self._generate_cache_key(weather_conditions, user_preferences)
-            if self.cache_handler:
-                cached_response = await self.cache_handler.get(cache_key)
-                if cached_response:
-                    logger.info("Returning cached recommendations")
-                    return cached_response
 
             # Retrieve suitable assets based on weather conditions
             filtered_assets = await self.asset_retriever.retrieve_assets(
@@ -49,6 +46,7 @@ class RecommendationEngine:
 
             # Prepare context for LLM
             assets_json = [item.model_dump_json() for item in filtered_assets]
+
             context = {
                 "weather": weather_conditions.model_dump_json(),
                 "assets": assets_json,
@@ -66,15 +64,14 @@ class RecommendationEngine:
 
             # Create response
             response = RecommendationResponse(
+                location=weather_conditions.location,
                 recommendations=recommendations[:self.max_recommendations],
                 weather_summary=self._generate_weather_summary(weather_conditions),
                 style_notes=self._generate_style_notes(recommendations, weather_conditions),
                 generated_at=datetime.utcnow()
             )
 
-            # Cache response if cache handler is available
-            if self.cache_handler:
-                await self.cache_handler.set(cache_key, response, expire=14400)  # 4 hour cache
+            # TODO: Cache response if cache handler is available
 
             return response
 
@@ -115,6 +112,7 @@ class RecommendationEngine:
             recommendations = self._process_llm_recommendations(llm_recommendations)
 
             return RecommendationResponse(
+                location=weather_conditions.location,
                 recommendations=recommendations[:self.max_recommendations],
                 weather_summary=self._generate_weather_summary(weather_conditions),
                 style_notes=self._generate_style_notes(recommendations, weather_conditions),

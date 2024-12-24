@@ -7,6 +7,7 @@ from ....schemas.assets import AssetItem
 from ....schemas.weather import WeatherData, WeatherConditions
 from ....services.recommendation_kernel.retrieval.base import BaseRetriever
 from ....core.exceptions import AssetRetrievalException
+from ....services.recommendation_kernel.filters import PreferenceFilter
 
 
 logger = logging.getLogger(__name__)
@@ -47,12 +48,14 @@ class JsonAssetRetriever(BaseRetriever):
         """Retrieve assets based on weather conditions and filters"""
         try:
             filtered_assets = []
+            filtered_assets = [asset for asset in self._assets if self._matches_weather_conditions(asset, weather_conditions)]
+            logger.debug(f"Retrieved {len(filtered_assets)} assets weather conditions")
+            print(f"Retrieved {len(filtered_assets)} assets weather conditions")
 
-            for asset in self._assets:
-                if self._matches_weather_conditions(asset, weather_conditions):
-                    if filters and not self._matches_filters(asset, filters):
-                        continue
-                    filtered_assets.append(asset)
+            if filters:
+                preference_filter = PreferenceFilter()
+                filtered_assets = preference_filter.filter_assets(filtered_assets, filters=filters)
+                print(f"Retrieved {len(filtered_assets)} assets preference filter conditions")
 
             logger.debug(f"Retrieved {len(filtered_assets)} assets matching conditions")
             return filtered_assets
@@ -73,7 +76,6 @@ class JsonAssetRetriever(BaseRetriever):
         except Exception as e:
             logger.error(f"Error retrieving assets: {str(e)}")
             raise AssetRetrievalException(f"Failed to retrieve assets: {str(e)}")
-
 
     async def refresh_assets(self) -> None:
         """Refresh assets from the JSON file"""
