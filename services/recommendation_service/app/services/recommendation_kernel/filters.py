@@ -139,6 +139,33 @@ class OutfitCompatibilityFilter(BaseFilter):
         return has_matching_style
 
 
+class PreferenceFilter(BaseFilter):
+    """Filter assets based on user preferences"""
+    def filter_assets(self, assets: List[AssetItem], **kwargs) -> List[AssetItem]:
+        preferences = kwargs.get("filters", {})
+        colors = preferences.get("colors", [])
+        styles = preferences.get("styles", [])
+        gender = preferences.get("gender", "unisex")
+        fit = preferences.get("fit", "normal")
+
+        filtered_assets = []
+
+        for asset_item in assets:
+            if colors and asset_item.color not in colors:
+                continue
+            if styles and not set(styles).intersection(asset_item.style):
+                continue
+            if gender != "unisex" and asset_item.gender != gender:
+                continue
+            if fit and asset_item.fit != fit:
+                continue
+            filtered_assets.append(asset_item)
+
+        logger.debug(f"Preference filter: {len(filtered_assets)}/{len(assets)} assets passed.")
+        print(f"Preference filter: {len(filtered_assets)}/{len(assets)} assets passed.")
+        return filtered_assets
+
+
 class FilterPipeline:
     """
     Example of usage:

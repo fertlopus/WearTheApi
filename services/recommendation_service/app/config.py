@@ -35,9 +35,10 @@ class Settings(BaseSettings):
     LLM_PROVIDER: str = "openai"
     OPEN_AI_API_KEY: Optional[str] = None
     OPEN_AI_MODEL: Optional[str] = None
+    OPENAI_API_VERSION: Optional[str] = "2024-07-18"
     OPEN_AI_TEMPERATURE: Optional[float] = 0.25
-    AZURE_OPENAI_API_KEY: Optional[str] = None
-    AZURE_OPENAI_LLM_ENDPOINT: Optional[str] = None
+    # AZURE_OPENAI_API_KEY: Optional[str] = None
+    # AZURE_OPENAI_LLM_ENDPOINT: Optional[str] = None
 
     # Assets Database
     # TODO: Assets source agnostic settings, e.g. json, postgres, mongodb, etc.

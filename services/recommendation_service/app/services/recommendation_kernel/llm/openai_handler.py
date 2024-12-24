@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import openai
 import json
 import re
@@ -8,7 +8,8 @@ from ....core.exceptions import LLMException
 
 
 class OpenAIHandler(LLMHandler):
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini", temperature: float = 0.3):
+    def __init__(self, api_key: str, model: str = "gpt-4o-mini", temperature: float = 0.3,
+                 api_version: Optional[str]=None):
         self.api_key = api_key
         self.model = model
         self.temperature = temperature

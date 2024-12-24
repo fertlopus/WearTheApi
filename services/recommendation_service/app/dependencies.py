@@ -9,6 +9,7 @@ from app.services.recommendation_kernel.retrieval.json_retriever import JsonAsse
 from app.services.recommendation_kernel.llm.openai_handler import OpenAIHandler
 from app.services.weather_client import WeatherClient
 from app.utils.redis_cache import AsyncRedisCache
+from openai import api_version
 
 
 async def get_asset_retriever(settings: Settings = Depends(get_settings)):
@@ -19,7 +20,8 @@ async def get_llm_handler(settings: Settings = Depends(get_settings)):
     return OpenAIHandler(
         api_key=settings.OPEN_AI_API_KEY,
         model=settings.OPEN_AI_MODEL,
-        temperature=settings.OPEN_AI_TEMPERATURE
+        temperature=settings.OPEN_AI_TEMPERATURE,
+        api_version="2024-10-01-preview"
     )
 
 
