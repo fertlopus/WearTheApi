@@ -1,0 +1,1601 @@
+[
+    {
+        "AssetName": "tshirt_001.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 35
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "tshirt_002.png",
+        "OutfitPart": "top",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 35
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "tshirt_003.png",
+        "OutfitPart": "top",
+        "Color": "beige",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 35
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "tshirt_004.png",
+        "OutfitPart": "top",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 35,
+            "Max": 50
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "tshirt_005.png",
+        "OutfitPart": "top",
+        "Color": "gray",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "tshirt_006.png",
+        "OutfitPart": "top",
+        "Color": "gray",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "shirt_001.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual"
+        ],
+        "Gender": "male",
+        "Fit": "oversize",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "shirt_002.png",
+        "OutfitPart": "top",
+        "Color": "red, white",
+        "Style": [
+            "casual"
+        ],
+        "Gender": "male",
+        "Fit": "oversize",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "shirt_003.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_001.png",
+        "OutfitPart": "top",
+        "Color": "black, white",
+        "Style": [
+            "casual"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_002.png",
+        "OutfitPart": "top",
+        "Color": "beige, black",
+        "Style": [
+            "casual"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_003.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_004.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow"
+        ],
+        "TempRange": {
+            "Min": -5,
+            "Max": 10
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "jacket_005.png",
+        "OutfitPart": "top",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": -30,
+            "Max": -5
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "jacket_006.png",
+        "OutfitPart": "top",
+        "Color": "brown",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "no",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_007.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": 10,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_008.png",
+        "OutfitPart": "top",
+        "Color": "gray",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": 10,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_009.png",
+        "OutfitPart": "top",
+        "Color": "black, gray",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jacket_010.png",
+        "OutfitPart": "top",
+        "Color": "black, gray",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": -5,
+            "Max": 5
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "jumper_001.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal, oversize",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jumper_002.png",
+        "OutfitPart": "top",
+        "Color": "gray",
+        "Style": [
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jumper_003.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jumper_004.png",
+        "OutfitPart": "top",
+        "Color": "gray",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "gilet_001.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "rain",
+            "shower rain"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "gilet_002.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 10,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "raincoat_001.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring"
+        ],
+        "Condition": [
+            "broken clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "raincoat_002.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring"
+        ],
+        "Condition": [
+            "broken clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain"
+        ],
+        "TempRange": {
+            "Min": 10,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "coat_001.png",
+        "OutfitPart": "top",
+        "Color": "black",
+        "Style": [
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 10,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "beanie_001.png",
+        "OutfitPart": "head",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 0,
+            "Max": 10
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "beanie_002.png",
+        "OutfitPart": "head",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": -30,
+            "Max": 0
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "beanie_003.png",
+        "OutfitPart": "head",
+        "Color": "beige, gray",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 5,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "cap_001.png",
+        "OutfitPart": "head",
+        "Color": "black",
+        "Style": [
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "few clouds",
+            "rain",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 5,
+            "Max": 15
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "cap_002.png",
+        "OutfitPart": "head",
+        "Color": "black, white",
+        "Style": [
+            "casual"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "glasses_001.png",
+        "OutfitPart": "head",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "clear sky"
+        ],
+        "TempRange": {
+            "Min": 0,
+            "Max": 50
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "panama_hat_001.png",
+        "OutfitPart": "head",
+        "Color": "color",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 50
+        },
+        "Wind": "no",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "shorts_001.png",
+        "OutfitPart": "bottom",
+        "Color": "color",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal, oversize",
+        "Season": [
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 50
+        },
+        "Wind": "no",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "shorts_002.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "summer"
+        ],
+        "Condition": [
+            "clear sky"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "no",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "pants_001.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "pants_002.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "pants_003.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": -30,
+            "Max": 5
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "pants_003.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 5,
+            "Max": 5
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jeans_001.png",
+        "OutfitPart": "bottom",
+        "Color": "blue",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 5,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jeans_002.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 5,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "jeans_003.png",
+        "OutfitPart": "bottom",
+        "Color": "blue",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 0,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "jeans_004.png",
+        "OutfitPart": "bottom",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 0,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "boots_001.png",
+        "OutfitPart": "footwear",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": -30,
+            "Max": 10
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "boots_002.png",
+        "OutfitPart": "footwear",
+        "Color": "brown",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": -30,
+            "Max": 10
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "boots_003.png",
+        "OutfitPart": "footwear",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "winter"
+        ],
+        "Condition": [
+            "broken clouds",
+            "clear sky",
+            "few clouds",
+            "rain",
+            "scattered clouds",
+            "shower rain",
+            "snow",
+            "thunderstorm"
+        ],
+        "TempRange": {
+            "Min": 0,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "yes"
+    },
+    {
+        "AssetName": "sneakers_001.png",
+        "OutfitPart": "footwear",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 10,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "sneakers_002.png",
+        "OutfitPart": "footwear",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 20
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "sneakers_003.png",
+        "OutfitPart": "footwear",
+        "Color": "white",
+        "Style": [
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds",
+            "scattered clouds"
+        ],
+        "TempRange": {
+            "Min": 20,
+            "Max": 25
+        },
+        "Wind": "no",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "sneakers_004.png",
+        "OutfitPart": "footwear",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 30
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "sneakers_005.png",
+        "OutfitPart": "footwear",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "yes",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "sneakers_006.png",
+        "OutfitPart": "footwear",
+        "Color": "white",
+        "Style": [
+            "casual",
+            "classic",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "autumn",
+            "spring",
+            "summer"
+        ],
+        "Condition": [
+            "clear sky",
+            "few clouds"
+        ],
+        "TempRange": {
+            "Min": 15,
+            "Max": 25
+        },
+        "Wind": "yes",
+        "Rain": "no",
+        "Snow": "no"
+    },
+    {
+        "AssetName": "slippers_001.png",
+        "OutfitPart": "footwear",
+        "Color": "black",
+        "Style": [
+            "casual",
+            "sport"
+        ],
+        "Gender": "male",
+        "Fit": "normal",
+        "Season": [
+            "summer"
+        ],
+        "Condition": [
+            "clear sky"
+        ],
+        "TempRange": {
+            "Min": 25,
+            "Max": 50
+        },
+        "Wind": "no",
+        "Rain": "no",
+        "Snow": "no"
+    }
+]
