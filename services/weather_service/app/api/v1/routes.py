@@ -1,3 +1,4 @@
+from aiohttp.abc import HTTPException
 from fastapi import APIRouter, Depends, BackgroundTasks
 from app.services.openweather import OpenWeatherService
 from app.schemas.weather import WeatherResponse, WeatherRequest
@@ -6,6 +7,7 @@ from app.services.cache_service import WeatherCacheService
 from app.config import get_settings
 import aioredis
 import logging
+import traceback
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

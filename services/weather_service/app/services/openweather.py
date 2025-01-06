@@ -16,12 +16,16 @@ class OpenWeatherService:
         self.api_key = settings.OPENWEATHER_API_KEY
         self.base_url = settings.OPENWEATHER_API_URL
         self.session: Optional[aiohttp.ClientSession] = None
+        logger.info("Initializing OpenWeather Service")
+        logger.debug(f"Base URL: {self.base_url}")
+        logger.debug(f"API Key exists: {bool(self.api_key)}")
 
     async def get_session(self) -> aiohttp.ClientSession:
         """Get or create aiohttp session. Standard/Custom way."""
         try:
             if self.session is None or self.session.closed:
                 self.session = aiohttp.ClientSession()
+                logger.debug("Created new aiohttp session")
             return self.session
         except Exception as e:
             logging.error(f"Unable to open/close session for the service: {str(e)}")
@@ -47,6 +51,7 @@ class OpenWeatherService:
                         f"{self.base_url}/{endpoint}",
                         params={"appid": self.api_key, **params},
                     ) as response:
+                        print(f"URL WEATHER API: {self.base_url}/{endpoint}")
                         if response.status == 404:
                             logger.error(f"Unknown location provided that caused the error: {params.get('q', '')}")
                             raise WeatherDataNotFoundException(params.get("q", "unknown location"))

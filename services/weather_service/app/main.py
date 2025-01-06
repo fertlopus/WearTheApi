@@ -19,16 +19,22 @@ logger = logging.getLogger(__name__)
 
 async def app_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("Starting up Weather Service")
-    redis = await get_redis()
-    weather_service = await get_weather_service()
-    cache_service = WeatherCacheService(redis, weather_service)
-    app.state.cache_service = cache_service
-    await cache_service.start_background_task()
-    yield  # Application is running
-
-    logger.info("Shutting Down Weather Service")
-    await cache_service.stop_background_refresh()
-    await redis.close()
+    try:
+        redis = await get_redis()
+        weather_service = await get_weather_service()
+        cache_service = WeatherCacheService(redis, weather_service)
+        app.state.cache_service = cache_service
+        await cache_service.start_background_task()
+        yield  # Application is running
+    except Exception as e:
+        logger.error(f"Failed to init Weather Service: {str(e)}")
+        raise
+    finally:
+        logger.info("Shutting down weather service")
+        if hasattr(app.state, 'cache_service'):
+            logger.info("Shutting Down Weather Service")
+            await cache_service.stop_background_refresh()
+            await redis.close()
 
 app = FastAPI(
     title=settings.WEATHER_API_PROJECT_NAME,
@@ -82,6 +88,7 @@ async def validation_exception_handler(reques, exc):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
+    print(f"str{exc}")
     return JSONResponse(
         status_code=500,
         content={
