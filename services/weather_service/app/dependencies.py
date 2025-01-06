@@ -62,6 +62,7 @@ async def create_redis_client() -> aioredis.Redis:
 
 async def get_weather_service() -> WeatherCacheService:
     """Provide WeatherCacheService as a dependency."""
+
     try:
         redis = await create_redis_client()
         weather_service = OpenWeatherService()
@@ -69,6 +70,7 @@ async def get_weather_service() -> WeatherCacheService:
     except Exception as e:
         logger.error(f"Failed to initialise WeatherCacheService due to error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Service initialization failed: {str(e)}")
+
 
 
 async def get_redis() -> aioredis.Redis:

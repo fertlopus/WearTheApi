@@ -16,6 +16,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+
 async def get_asset_retriever(settings: Settings = Depends(get_settings)):
     return JsonAssetRetriever(asset_path=settings.ASSETS_PATH)
 
