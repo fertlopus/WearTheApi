@@ -25,10 +25,7 @@ class Settings(BaseSettings):
     WEATHER_SERVICE_TIMEOUT: int = 10
 
     # Redis Settings
-    REDIS_HOST: str
-    REDIS_PORT: int
-    REDIS_PASSWORD: Optional[str] = None
-    REDIS_DB: int = 0
+    REDIS_PRIMARY_CONNECTION_STRING: str
 
     # LLM Settings
     # TODO: LLM Provider agnostic settings, e.g. openai, azure, claude, etc.
@@ -89,5 +86,5 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=256)
 def get_settings() -> Settings:
     settings = Settings()
-    settings.load_secrets_from_key_vault()
+    # settings.load_secrets_from_key_vault()
     return settings

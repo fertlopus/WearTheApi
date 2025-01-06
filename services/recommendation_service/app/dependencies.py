@@ -10,6 +10,10 @@ from app.services.recommendation_kernel.llm.openai_handler import OpenAIHandler
 from app.services.weather_client import WeatherClient
 from app.utils.redis_cache import AsyncRedisCache
 from openai import api_version
+import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def get_asset_retriever(settings: Settings = Depends(get_settings)):
@@ -26,12 +30,22 @@ async def get_llm_handler(settings: Settings = Depends(get_settings)):
 
 
 async def get_cache_handler(settings: Settings = Depends(get_settings)) -> Optional[AsyncRedisCache]:
-    redis = aioredis.from_url(
-        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-        encoding="utf-8",
-        decode_responses=True
-    )
-    return AsyncRedisCache(redis, prefix="rec_service")
+    try:
+        # Extract host and port
+        host_port = settings.REDIS_PRIMARY_CONNECTION_STRING.split(',')[0]
+        host, port = host_port.split(':')
+
+        # Extract password
+        password_match = re.search(r'password=([^,]+)', settings.REDIS_PRIMARY_CONNECTION_STRING)
+        if not password_match:
+            raise ValueError("Password not found in connection string")
+        password = password_match.group(1)
+
+        # Construct Redis URL
+        return AsyncRedisCache(f"rediss://default:{password}@{host}:{port}", prefix="rec_service")
+    except Exception as e:
+        logger.error(f"Failed to parse Redis connection string: {str(e)}")
+        raise
 
 
 async def get_weather_client(settings: Settings = Depends(get_settings)):
