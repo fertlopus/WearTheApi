@@ -25,7 +25,8 @@ logging.basicConfig(
 
 
 async def get_asset_retriever(settings: Settings = Depends(get_settings)):
-    return JsonAssetRetriever(asset_path=settings.ASSETS_PATH)
+    return JsonAssetRetriever(asset_path=settings.ASSETS_PATH,
+                              max_workers=6)
 
 
 async def get_llm_handler(settings: Settings = Depends(get_settings)):

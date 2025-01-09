@@ -175,5 +175,31 @@ of the CI/CD pipeline.
    az keyvault set-policy --name kv-wearthe-dev --object-id $WEATHER_ID --secret-permissions get list
 
    # The same steps for Recommendation Service
+   ```
+
+# Local Run via Docker-Compose:
+
+You can run to test the backend logic locally via Docker Compose file at the root of the project. 
+
+```bash
+# Build the service
+$ docker-compose build --no-cache
+
+# Run the service
+$ docker-compose up -d 
+
+# Stop the service (if needed)
+$ docker-compose down
 ```
-   
+
+If you need to monitor logs of each of the services running in the container use the following:
+
+```bash
+# For the weather service
+$ docker-compose logs -f weather_service
+
+# For the Recommendation service
+$ docker-compose logs -f recommendation_service
+```
+
+Follow the same pattern for the other services (e.g. Postgres, Redis Cache etc.).

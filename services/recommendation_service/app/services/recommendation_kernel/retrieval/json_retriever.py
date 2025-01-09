@@ -2,62 +2,100 @@ import json
 import logging
 from typing import List, Dict, Any, Optional
 from pathlib import Path
+import  asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 from ....schemas.assets import AssetItem
 from ....schemas.weather import WeatherData, WeatherConditions
 from ....services.recommendation_kernel.retrieval.base import BaseRetriever
+from ..parallel_filter import ParallelFilterSystem
 from ....core.exceptions import AssetRetrievalException
 from ....services.recommendation_kernel.filters import PreferenceFilter
 
 
 logger = logging.getLogger(__name__)
 
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Log to the console
+    ]
+)
+
 
 class JsonAssetRetriever(BaseRetriever):
     """JSON-based asset retriever"""
-    def __init__(self, asset_path: Path):
+    def __init__(self, asset_path: Path, max_workers: Optional[int] = None):
         self.asset_path = Path(asset_path)
         self._assets: List[AssetItem] = []
         self._asset_index: Dict[str, AssetItem] = {}
+        self.filter_system = ParallelFilterSystem(max_workers=max_workers)
+        self._initialized = False
+        self._lock = asyncio.Lock()
 
     async def initialize(self) -> None:
-        """Reload assets from JSON"""
-        try:
-            logger.info(f"Attempt to load assets from source: {self.asset_path}")
-            logger.info(f"Asset path exists: {self.asset_path.exists()}")
-            logger.debug(f"Asset path absolute: {self.asset_path.absolute()}")
+        """Initialize assets with lazy loading and locking."""
+        if self._initialized:
+            return
 
-            if not self.asset_path.exists():
-                raise FileNotFoundError(f"Asset file not found: {self.asset_path}")
+        async with self._lock:
+            if self._initialized:  # Double-check pattern
+                return
 
-            with open(self.asset_path) as f:
-                raw_assets = json.load(f)
+            try:
+                logger.info(f"Initializing assets from: {self.asset_path}")
 
-            # Convert raw assets to AssetItem objects using Pydantic's alias support
-            self._assets = [AssetItem(**asset) for asset in raw_assets]
-            self._asset_index = {asset.asset_name: asset for asset in self._assets}
-            logger.info(f"Loaded {len(self._assets)} assets successfully for the context to provide recommendations")
+                if not self.asset_path.exists():
+                    raise FileNotFoundError(f"Asset file not found: {self.asset_path}")
 
-        except Exception as e:
-            logger.error(f"Failed to refresh assets: {str(e)}")
-            raise AssetRetrievalException(f"Failed to refresh asset database: {str(e)}")
+                # Load assets asynchronously
+                loop = asyncio.get_event_loop()
+                with ThreadPoolExecutor() as executor:
+                    raw_assets = await loop.run_in_executor(
+                        executor,
+                        self._load_assets_from_file
+                    )
+
+                # Process assets
+                self._assets = [AssetItem(**asset) for asset in raw_assets]
+                self._asset_index = {asset.asset_name: asset for asset in self._assets}
+
+                self._initialized = True
+                logger.info(f"Successfully loaded {len(self._assets)} assets")
+
+            except Exception as e:
+                logger.error(f"Failed to initialize assets: {str(e)}")
+                raise AssetRetrievalException(f"Failed to initialize asset database: {str(e)}")
+
+    def _load_assets_from_file(self) -> List[Dict[str, Any]]:
+        """Load assets from file in a separate thread."""
+        with open(self.asset_path) as f:
+            return json.load(f)
 
     async def retrieve_assets(self, weather_conditions: WeatherConditions,
                               filters: Optional[Dict[str, Any]]=None) -> List[AssetItem]:
         """Retrieve assets based on weather conditions and filters"""
         try:
+            await self.initialize()
+
             filtered_assets = []
             logger.info(f"Before filtering on weather conditions, number of assets: {len(self._assets)}")
 
-            filtered_assets = [asset for asset in self._assets if self._matches_weather_conditions(asset, weather_conditions)]
+            # Apply parallel filtering
+            filtered_assets = await self.filter_system.filter_assets_parallel(
+                assets=self._assets,
+                weather_conditions=weather_conditions,
+                filters=filters
+            )
 
             logger.debug(f"Retrieved {len(filtered_assets)} assets weather conditions")
             logger.info(f"After filtering on weather conditions: {len(filtered_assets)}")
 
-            if filters:
-                preference_filter = PreferenceFilter()
-                filtered_assets = preference_filter.filter_assets(filtered_assets, filters=filters)
-                logger.info(f"Retrieved {len(filtered_assets)} assets preference filter conditions")
+            # if filters:
+            #     preference_filter = PreferenceFilter()
+            #     filtered_assets = preference_filter.filter_assets(filtered_assets, filters=filters)
+            #     logger.info(f"Retrieved {len(filtered_assets)} assets preference filter conditions")
 
             logger.debug(f"Retrieved {len(filtered_assets)} assets matching conditions")
             return filtered_assets
@@ -80,22 +118,16 @@ class JsonAssetRetriever(BaseRetriever):
             logger.error(f"Error retrieving assets: {str(e)}")
             raise AssetRetrievalException(f"Failed to retrieve assets: {str(e)}")
 
+    async def get_asset_by_name(self, asset_name: str) -> Optional[AssetItem]:
+        """Get specific asset by name."""
+        await self.initialize()
+        return self._asset_index.get(asset_name)
+
     async def refresh_assets(self) -> None:
-        """Refresh assets from the JSON file"""
-        try:
-            if not self.asset_path.exists():
-                raise FileNotFoundError(f"Asset file not found: {self.asset_path}")
+        """Refresh assets with initialization reset."""
+        self._initialized = False
+        await self.initialize()
 
-            with open(self.asset_path) as f:
-                raw_assets = json.load(f)
-
-            self._assets = [AssetItem(**asset) for asset in raw_assets]
-            self._asset_index = {asset.asset_name: asset for asset in self._assets}
-            logger.info(f"Loaded {len(self._assets)} assets successfully")
-
-        except Exception as e:
-            logger.error(f"Failed to refresh assets: {str(e)}")
-            raise FileNotFoundError(f"Failed to refresh asset database: {str(e)}")
 
     def _matches_weather_conditions(self, asset: AssetItem, weather: WeatherConditions) -> bool:
         """Check if asset matches weather conditions"""
@@ -150,12 +182,12 @@ class JsonAssetRetriever(BaseRetriever):
             logger.error(f"Error in matching weather conditions: {str(e)}")
             return False
 
-    async def get_asset_by_name(self, asset_name: str) -> Optional[AssetItem]:
-        """Get specific asset by name"""
-        try:
-            return self._asset_index.get(asset_name)
-        except KeyError as e:
-            logger.error(f"Asset {asset_name} not found in the asset catalog: {str(e)}")
+    # async def get_asset_by_name(self, asset_name: str) -> Optional[AssetItem]:
+    #     """Get specific asset by name"""
+    #     try:
+    #         return self._asset_index.get(asset_name)
+    #     except KeyError as e:
+    #         logger.error(f"Asset {asset_name} not found in the asset catalog: {str(e)}")
 
     def _matches_filters(self, asset: AssetItem, filters: Dict[str, Any]) -> bool:
         """Check if asset matches conditional filters defined"""
