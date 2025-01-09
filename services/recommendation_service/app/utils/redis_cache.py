@@ -15,6 +15,7 @@ class AsyncRedisCache:
         try:
             full_key = f"{self.prefix}{key}"
             value = await self.redis.get(full_key)
+            logger.info("Redis key-value formed and obtained.")
             return value.decode('utf-8') if value else None
         except Exception as e:
             logger.error(f"Cache get error for key {key}: {str(e)}")
@@ -24,6 +25,7 @@ class AsyncRedisCache:
         """Set value in cache with expiration."""
         try:
             full_key = f"{self.prefix}{key}"
+            logger.info("Full key for redis is set")
             await self.redis.set(full_key, value, ex=expire)
         except Exception as e:
             logger.error(f"Cache set error for key {key}: {str(e)}")
@@ -33,6 +35,7 @@ class AsyncRedisCache:
         """Delete value from cache."""
         try:
             full_key = f"{self.prefix}{key}"
+            logger.info(f"Redis deleted item by key: {full_key}")
             await self.redis.delete(full_key)
         except Exception as e:
             logger.error(f"Cache delete error for key {key}: {str(e)}")

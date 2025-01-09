@@ -10,6 +10,14 @@ from ...core.exceptions import ValidationException
 
 logger = logging.getLogger(__name__)
 
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Log to the console
+    ]
+)
+
 
 class BaseFilter(ABC):
     """Base class for all filters"""
@@ -28,10 +36,13 @@ class WeatherFilter(BaseFilter):
         weather_conditions = kwargs.get('weather_conditions')
 
         if weather_conditions is None:
+            logger.info("Weather conditions is not met or absent")
             raise ValueError("weather_conditions is required for WeatherFilter")
 
         filtered_assets = []
+
         for asset in assets:
+            logger.info("Weather filter appliance.")
             if self._is_weather_appropriate(asset, weather_conditions):
                 filtered_assets.append(asset)
 
@@ -40,18 +51,22 @@ class WeatherFilter(BaseFilter):
 
     def _is_weather_appropriate(self, asset: AssetItem, weather: WeatherConditions) -> bool:
         """Checks if asset is appropriate for given weather conditions"""
-        # Temp checks
         if not (asset.temp_range.temperature_min <= weather.temperature <= asset.temp_range.temperature_max):
+            logger.info("Temperature range checking.")
             return False
-        # Weather condition checks
+
         if weather.description not in asset.condition:
+            logger.info("Weather Description checking.")
             return False
-        # Wind checks
+
         if weather.wind_speed > 0 and asset.wind == "no":
+            logger.info("Wind speed checking.")
             return False
-        # Rain checks
+
         if weather.snow > 0 and asset.snow == "no":
+            logger.info("Snow appliance checking.")
             return False
+
         return True
 
 

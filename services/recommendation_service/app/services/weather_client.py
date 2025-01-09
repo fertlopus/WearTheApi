@@ -8,6 +8,14 @@ from ..schemas.weather import WeatherData, WeatherConditions
 
 logger = logging.getLogger(__name__)
 
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Log to the console
+    ]
+)
+
 
 class WeatherClient:
     """Client for interacting with the Weather Service."""
@@ -29,7 +37,7 @@ class WeatherClient:
         """
         try:
             endpoint = f"{self.base_url}api/v1/weather/city/{location}"
-            print(f"Requesting the endpoint: {endpoint}")
+            logger.info(f"Requesting the endpoint: {endpoint}")
 
             # query params if country_code is provided
             params = {}
@@ -45,7 +53,7 @@ class WeatherClient:
                         )
 
                     data = await response.json()
-                    print(f"Weather service returned response: {data}")
+                    logger.info(f"Weather service returned response: {data}")
 
                     # Create WeatherData object
                     weather_data = self._map_response_to_weather_data(data)
@@ -64,6 +72,7 @@ class WeatherClient:
         except aiohttp.ClientError as e:
             logger.error(f"Error connecting to weather service: {str(e)}")
             raise WeatherServiceException(f"Failed to connect to weather service: {str(e)}")
+
         except Exception as e:
             logger.error(f"Error fetching weather data: {str(e)}")
             raise WeatherServiceException(f"Failed to fetch weather data: {str(e)}")
@@ -72,12 +81,15 @@ class WeatherClient:
         """Check if the weather service is available."""
         try:
             endpoint = f"{self.base_url}/api/v1/health"
+            logger.info(f"Accessing the endpoint called --> {endpoint}")
+
             async with aiohttp.ClientSession() as session:
                 async with session.get(endpoint, timeout=self.timeout) as response:
                     if response.status == 200:
                         return True
                     logger.warning(f"Weather service health check failed: {response.status}")
                     return False
+
         except Exception as e:
             logger.error(f"Weather service health check failed: {str(e)}")
             return False
@@ -100,4 +112,3 @@ class WeatherClient:
                         weather_id=response_json.get("weather_id"),
                         timestamp=datetime.fromtimestamp(response_json["timestamp"])
                     )
-

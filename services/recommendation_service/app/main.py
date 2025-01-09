@@ -12,6 +12,15 @@ from app.core.exceptions import (RecommendationServiceException, WeatherServiceE
                               LLMException, AssetRetrievalException)
 
 logger = logging.getLogger(__name__)
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Log to the console
+    ]
+)
+
 settings = get_settings()
 
 @asynccontextmanager

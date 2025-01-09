@@ -23,9 +23,8 @@ class JsonAssetRetriever(BaseRetriever):
     async def initialize(self) -> None:
         """Reload assets from JSON"""
         try:
-            logger.debug(f"Attempt to load assets from source: {self.asset_path}")
-            print(f"Attempt to load assets from source: {self.asset_path}")
-            logger.debug(f"Asset path exists: {self.asset_path.exists()}")
+            logger.info(f"Attempt to load assets from source: {self.asset_path}")
+            logger.info(f"Asset path exists: {self.asset_path.exists()}")
             logger.debug(f"Asset path absolute: {self.asset_path.absolute()}")
 
             if not self.asset_path.exists():
@@ -37,7 +36,7 @@ class JsonAssetRetriever(BaseRetriever):
             # Convert raw assets to AssetItem objects using Pydantic's alias support
             self._assets = [AssetItem(**asset) for asset in raw_assets]
             self._asset_index = {asset.asset_name: asset for asset in self._assets}
-            logger.info(f"Loaded {len(self._assets)} assets successfully")
+            logger.info(f"Loaded {len(self._assets)} assets successfully for the context to provide recommendations")
 
         except Exception as e:
             logger.error(f"Failed to refresh assets: {str(e)}")
@@ -48,14 +47,17 @@ class JsonAssetRetriever(BaseRetriever):
         """Retrieve assets based on weather conditions and filters"""
         try:
             filtered_assets = []
+            logger.info(f"Before filtering on weather conditions, number of assets: {len(self._assets)}")
+
             filtered_assets = [asset for asset in self._assets if self._matches_weather_conditions(asset, weather_conditions)]
+
             logger.debug(f"Retrieved {len(filtered_assets)} assets weather conditions")
-            print(f"Retrieved {len(filtered_assets)} assets weather conditions")
+            logger.info(f"After filtering on weather conditions: {len(filtered_assets)}")
 
             if filters:
                 preference_filter = PreferenceFilter()
                 filtered_assets = preference_filter.filter_assets(filtered_assets, filters=filters)
-                print(f"Retrieved {len(filtered_assets)} assets preference filter conditions")
+                logger.info(f"Retrieved {len(filtered_assets)} assets preference filter conditions")
 
             logger.debug(f"Retrieved {len(filtered_assets)} assets matching conditions")
             return filtered_assets
@@ -71,8 +73,9 @@ class JsonAssetRetriever(BaseRetriever):
                 if self._matches_weather_conditions(asset, weather_conditions):
                     filtered_assets.append(asset)
 
-            print(f"Retrieved {len(filtered_assets)} assets matching weather conditions")
+            logger.info(f"Retrieved {len(filtered_assets)} assets matching weather conditions")
             return filtered_assets
+
         except Exception as e:
             logger.error(f"Error retrieving assets: {str(e)}")
             raise AssetRetrievalException(f"Failed to retrieve assets: {str(e)}")
@@ -102,7 +105,7 @@ class JsonAssetRetriever(BaseRetriever):
         try:
             # Temperature check
             if not int(weather.temperature) in range(int(asset.temp_range.temperature_min), int(asset.temp_range.temperature_max)):
-                print(f"Asset {asset.asset_name} failed temperature check. Temp: {weather.temperature}, "
+                logger.info(f"Asset {asset.asset_name} failed temperature check. Temp: {weather.temperature}, "
                              f"Range: {asset.temp_range}")
                 return False
 
@@ -114,16 +117,35 @@ class JsonAssetRetriever(BaseRetriever):
             #    return False
 
             # Rain check
-            if weather.rain > 0 and asset.rain == "no":
-                print(f"Asset {asset.asset_name} failed rain check. "
-                             f"Rain: {weather.rain}, Asset Rain: {asset.rain}")
-                return False
+            # if weather.rain > 0.0 and asset.rain == "no":
+            #     logger.info(
+            #         f"Asset {asset.asset_name} excluded due to rain conditions"
+            #         f"Asset Rain parameter: {asset.rain} and Weather Rain parameter: {weather.rain}"
+            #     )
+            #     return False
+            # elif weather.rain == 0.0 and asset.rain == "yes":
+            #     logger.info(
+            #         f"Asset {asset.asset_name} excluded due to its designed for rainy condition, but it is not rainy. "
+            #         f"Weather Rain: {weather.rain}, Asset Rain Label: {asset.rain}"
+            #     )
+            #     return False
+
             # Snow check
-            if weather.snow > 0 and asset.snow == "no":
-                print(f"Asset {asset.asset_name} failed snow check. "
-                             f"Snow: {weather.snow}, Asset Snow: {asset.snow}")
-                return False
+            # if weather.snow > 0 and asset.snow == "no":
+            #     logger.info(
+            #         f"Asset '{asset.asset_name}' excluded due to snow conditions. "
+            #         f"Weather Snow: {weather.snow}, Asset Snow Label: {asset.snow}"
+            #     )
+            #     return False
+            # elif weather.snow == 0 and asset.snow == "yes":
+            #     logger.info(
+            #         f"Asset {asset.asset_name} excluded because it is designed for snowy conditions, but it's snowless. "
+            #         f"Weather Snow: {weather.snow}, Asset Snow Label: {asset.snow}"
+            #     )
+            #     return False
+            # # If all checks pass, the asset matches
             return True
+
         except Exception as e:
             logger.error(f"Error in matching weather conditions: {str(e)}")
             return False

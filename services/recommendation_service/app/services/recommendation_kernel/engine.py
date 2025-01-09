@@ -16,6 +16,13 @@ from .llm.base import LLMHandler
 
 logger = logging.getLogger(__name__)
 
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Log to the console
+    ]
+)
 
 class RecommendationEngine:
     """Orchestrates the recommendation process."""
@@ -31,18 +38,21 @@ class RecommendationEngine:
         """Generate outfit recommendations based on weather and user preferences."""
         try:
             await self.asset_retriever.initialize()
-            print(f"Weather Conditions: {weather_conditions} in the script engine.py")
-            print(f"User Preferences: {user_preferences} in the script engine.py")
+            logger.info(f"Weather Conditions: {weather_conditions} in the script engine.py")
+            logger.info(f"User Preferences: {user_preferences} in the script engine.py")
 
             # Retrieve suitable assets based on weather conditions
             filtered_assets = await self.asset_retriever.retrieve_assets(
                 weather_conditions=weather_conditions,
                 filters=user_preferences)
 
+            logger.info(f"Script engine.py number of filtered assets: {len(filtered_assets)}")
+
             if not filtered_assets:
+                logger.warning(f"No assets found that suit the conditions")
                 raise RecommendationServiceException("No suitable assets found for the given conditions")
 
-            print(f"Filtered assets {filtered_assets} in the script engine.py")
+            logger.info(f"Filtered assets {filtered_assets} in the script engine.py")
 
             # Prepare context for LLM
             assets_json = [item.model_dump_json() for item in filtered_assets]
@@ -54,6 +64,8 @@ class RecommendationEngine:
             }
 
             # Generate recommendations using LLM
+            logger.info("Generating the recommendations. Calling method llm_handler.generate_recommendations"
+                        "in script engine.py")
             llm_recommendations = await self.llm_handler.generate_recommendations(
                 context=context,
                 weather_context={}  # TODO: Empty as per future implementation
@@ -81,14 +93,15 @@ class RecommendationEngine:
 
     async def get_simple_recommendations(self, weather_conditions: WeatherConditions) -> RecommendationResponse:
         try:
-            print(f"Weather conditions: {weather_conditions} in script engine.py")
+            logger.info(f"Weather conditions: {weather_conditions} in script engine.py")
             await self.asset_retriever.initialize()
 
             filtered_assets = await self.asset_retriever.retrieve_assets_without_filters(weather_conditions=weather_conditions)
             if not filtered_assets:
                 raise RecommendationServiceException("No suitable assets found for the given conditions")
 
-            print(f"Len of filtered assets: {len(filtered_assets)} in script engine.py")
+            logger.info(f"Len of filtered assets: {len(filtered_assets)} in script engine.py")
+
             # Prepare context for LLM
             assets_json = [item.model_dump_json() for item in filtered_assets]
 
@@ -98,7 +111,7 @@ class RecommendationEngine:
                 "style_preferences": []  # Empty for now
             }
 
-            print(f"LLM Context Debug: {context} in script name engine.py")
+            logger.debug(f"LLM Context Debug: {context} in script name engine.py")
 
             # Generate recommendations using LLM
             llm_recommendations = await self.llm_handler.generate_recommendations(
@@ -106,7 +119,7 @@ class RecommendationEngine:
                 weather_context={}
             )
 
-            print(f"LLM Recommendations: {llm_recommendations} in script name enginge.py")
+            logger.debug(f"LLM Recommendations: {llm_recommendations} in script name enginge.py")
 
             # Process and validate recommendations
             recommendations = self._process_llm_recommendations(llm_recommendations)
@@ -126,12 +139,14 @@ class RecommendationEngine:
 
     def _generate_cache_key(self,weather_conditions: WeatherConditions, user_preferences: Dict[str, Any]) -> str:
         """Generate unique cache key based on input parameters."""
+        logger.info("Generating the key_hash")
         key_data = f"{weather_conditions.location}_{weather_conditions.temperature}_{user_preferences}"
         key_hash = hashlib.md5(key_data.encode()).hexdigest()
         return f"rec:{key_hash}"
 
     def _prepare_llm_context(self, assets: List[AssetItem], user_preferences: Dict[str, Any]) -> Dict[str, Any]:
         """Prepare context for LLM processing."""
+        logger.info("Preparing the context for the LLM")
         return {
             "assets": [asset.model_dump_json() for asset in assets],
             "style_preferences": user_preferences.get("style", []),
@@ -143,6 +158,7 @@ class RecommendationEngine:
     def _process_llm_recommendations(self, llm_output: List[Dict[str, Any]]) -> List[OutfitRecommendation]:
         """Process and validate LLM recommendations."""
         processed_recommendations = []
+        logger.info("Processing the recommendations")
 
         for rec_item in llm_output:
             try:

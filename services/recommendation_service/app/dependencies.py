@@ -15,6 +15,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Log to the console
+    ]
+)
+
 
 async def get_asset_retriever(settings: Settings = Depends(get_settings)):
     return JsonAssetRetriever(asset_path=settings.ASSETS_PATH)
@@ -34,6 +42,7 @@ async def get_cache_handler(settings: Settings = Depends(get_settings)) -> Optio
         # Extract host and port
         host_port = settings.REDIS_PRIMARY_CONNECTION_STRING.split(',')[0]
         host, port = host_port.split(':')
+        logger.info(f"Cache handler is under host: {host} and port: {port}")
 
         # Extract password
         password_match = re.search(r'password=([^,]+)', settings.REDIS_PRIMARY_CONNECTION_STRING)
