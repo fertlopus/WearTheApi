@@ -33,7 +33,8 @@ async def get_llm_handler(settings: Settings = Depends(get_settings)):
         api_key=settings.OPEN_AI_API_KEY,
         model=settings.OPEN_AI_MODEL,
         temperature=settings.OPEN_AI_TEMPERATURE,
-        api_version="2024-10-01-preview"
+        api_version="2024-10-01-preview",
+        timeout=15.0
     )
 
 
