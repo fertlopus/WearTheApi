@@ -7,6 +7,7 @@ from typing import Dict, Optional
 from app.core.exceptions import OpenWeatherAPIException, WeatherDataNotFoundException
 from app.config import get_settings
 from app.schemas.weather import WeatherResponse
+from app.schemas.forecast import ForecastResponse
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -36,8 +37,9 @@ class OpenWeatherService:
         try:
             if self.session and not self.session.closed:
                 await self.session.close()
+                logger.info("The session closed.")
         except Exception as e:
-            logging.error(f"Unable to close session due to the error occured: {str(e)}")
+            logging.error(f"Unable to close session due to the error occurred: {str(e)}")
 
     async def _make_request(self, endpoint: str, params: Dict[str, str]) -> Dict:
         """Make request to OpenWeather API with retry mechanism"""
@@ -51,19 +53,39 @@ class OpenWeatherService:
                         f"{self.base_url}/{endpoint}",
                         params={"appid": self.api_key, **params},
                     ) as response:
-                        print(f"URL WEATHER API: {self.base_url}/{endpoint}")
+                        logger.info(f"URL WEATHER API: {self.base_url}/{endpoint}")
                         if response.status == 404:
                             logger.error(f"Unknown location provided that caused the error: {params.get('q', '')}")
                             raise WeatherDataNotFoundException(params.get("q", "unknown location"))
                         response.raise_for_status()
                         data = await response.json()
-                        # Data validation
-                        if 'main' not in data or 'weather' not in data:
-                            logger.error(f"Unsuccessful data validation, 'main' or 'weather' keys were not found.")
-                            raise OpenWeatherAPIException("Incomplete data received from OpenWeather API call.")
+
+                        # Data validation based on endpoint
+                        if endpoint == "weather":
+                            # Current weather validation
+                            if 'main' not in data or 'weather' not in data:
+                                logger.error(f"Unsuccessful data validation, 'main' or 'weather' keys were not found.")
+                                raise OpenWeatherAPIException("Incomplete data received from OpenWeather API call.")
+
+                        elif endpoint == "forecast":
+                            # Forecast validation
+                            if 'list' not in data or 'city' not in data:
+                                logger.error(
+                                    f"Unsuccessful forecast data validation, 'list' or 'city' keys were not found.")
+                                raise OpenWeatherAPIException(
+                                    "Incomplete forecast data received from OpenWeather API call.")
+
+                            # Validate first forecast point (as a sample)
+                            first_point = data['list'][0] if data['list'] else None
+                            if not first_point or 'main' not in first_point or 'weather' not in first_point:
+                                logger.error(f"Invalid forecast point data structure")
+                                raise OpenWeatherAPIException(
+                                    "Invalid forecast data structure received from OpenWeather API call.")
+
                         return data
-            except (aiohttp.ClientError, aiohttp.ClientResponseError,
-                    aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
+
+            except (aiohttp.ClientError, aiohttp.ClientResponseError, aiohttp.ClientConnectionError,
+                    asyncio.TimeoutError) as e:
                 logger.error(f"Error in request processing from OpenWeather API: {str(e)}")
                 logger.error(f"Request failed (attempt {attempt + 1}/{retries}) for {endpoint} with params {params}: {str(e)}")
                 if attempt == retries - 1:
@@ -77,34 +99,18 @@ class OpenWeatherService:
             "weather",
             {"q": location_query, "units": units}
         )
+        logger.info("Successfully triggered get_current_weather and returned weather data.")
         return self._parse_weather_response(response)
 
     async def get_current_weather_by_coordinates(self, lat: float, lon: float, units: str="metric") -> WeatherResponse:
-        """Get the current weather for a given latitude and longitude.
-
-        Args:
-            lat (float): Latitude of the location.
-            lon (float): Longitude of the location.
-            units (str): Metric components ("imperial" or "metric" values)
-
-        Returns:
-            WeatherResponse: The weather data encapsulated in a response object.
-        """
         response = await self._make_request(
             "weather",
             {"lat": str(lat), "lon": str(lon), "units": units}
         )
+        logger.info("Successfully triggered get_current_weather_by_coordinates and returned weather data.")
         return self._parse_weather_response(response)
 
     def _parse_weather_response(self, response: Dict) -> WeatherResponse:
-        """Parse the OpenWeather API response and convert it to a WeatherResponse object
-
-        Args:
-            response (Dict): The JSON response from the API
-
-        Returns:
-            WeatherResponse: The parsed weather data
-        """
         # Extract optional fields with defaults
         rain = response.get("rain", {}).get("1h", 0.0)
         snow = response.get("snow", {}).get("1h", 0.0)
@@ -131,3 +137,22 @@ class OpenWeatherService:
             sunrise=response["sys"]["sunrise"],
             sunset=response["sys"]["sunset"]
         )
+
+    async def get_forecast(self, city: str, country_code: Optional[str]=None, units: str = "metric") -> ForecastResponse:
+        """5-day/3-hour forecast for a given city and optional country code"""
+        location_query = f"{city},{country_code}" if country_code else city
+        response = await self._make_request(
+            "forecast",
+            {"q": location_query, "units": units}
+        )
+        return ForecastResponse(**response)
+
+    async def get_forecast_by_coordinates(self, lat: float, lon: float, units: str = "metric") -> ForecastResponse:
+        """Get 5-day/3-hour forecast for given coordinates."""
+        response = await self._make_request(
+            "forecast",
+            {"lat": str(lat), "lon": str(lon), "units": units}
+        )
+        return ForecastResponse(**response)
+
+

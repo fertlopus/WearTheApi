@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from .core.exceptions import (OpenWeatherAPIException,
                               WeatherDataNotFoundException)
-from typing import AsyncGenerator, AsyncContextManager
+from typing import AsyncGenerator
 import logging
 from app.api.v1 import routes
 from app.config import get_settings

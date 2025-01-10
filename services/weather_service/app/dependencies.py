@@ -1,15 +1,12 @@
 import aioredis
 import logging.config
-from typing import AsyncGenerator
 from fastapi import HTTPException
 from app.services.openweather import OpenWeatherService
 from app.services.cache_service import WeatherCacheService
 from app.config import get_settings
 from app.logging_config import setup_logging
-from contextlib import asynccontextmanager
 import re
 
-# Logging Configuration
 logging.config.dictConfig(setup_logging())
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -57,8 +54,6 @@ async def create_redis_client() -> aioredis.Redis:
         logger.error(f"Failed to create Redis client: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Redis connection failed with error: {str(e)}")
 
-# Redis connection (singleton)
-# redis = None
 
 async def get_weather_service() -> WeatherCacheService:
     """Provide WeatherCacheService as a dependency."""

@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from app.services.openweather import OpenWeatherService
 from app.schemas.weather import WeatherResponse
 from app.core.exceptions import WeatherServiceException
+from app.schemas.forecast import ForecastResponse
 
 
 logger = logging.getLogger(__name__)
@@ -299,3 +300,43 @@ class WeatherCacheService:
     async def _refresh_cache_by_city_country(self, city: str, country_code: str):
         cache_key = f"weather:city:{city.lower()}:{country_code.lower()}"
         await self._fetch_and_cache_by_city
+
+    async def get_forecast_by_city(self, background_tasks: BackgroundTasks, city: str,
+                                   country_code: Optional[str] = None) -> ForecastResponse:
+        cache_key = f"forecast:city:{city.lower()}" + (f":{country_code.lower()}" if country_code else "")
+        # Try to get cached data
+        cached_data = await self.redis.get(cache_key)
+        if cached_data:
+            logger.info(f"Cache hit for forecast key: {cache_key}")
+            forecast_data = ForecastResponse(**json.loads(cached_data))
+            # Check if refresh is needed
+            if (datetime.now() - datetime.fromtimestamp(
+                    forecast_data.forecast_points[0].dt)).total_seconds() > self.refresh_threshold:
+                background_tasks.add_task(self._refresh_forecast_cache, city, country_code)
+            return forecast_data
+        # If not in cache, fetch and cache
+        return await self._fetch_and_cache_forecast(city, country_code)
+
+    async def _fetch_and_cache_forecast(self, city: str, country_code: Optional[str] = None) -> ForecastResponse:
+        try:
+            forecast_data = await self.weather_service.get_forecast(city, country_code)
+            cache_key = f"forecast:city:{city.lower()}" + (f":{country_code.lower()}" if country_code else "")
+            # Cache the forecast data
+            await self.redis.set(
+                cache_key,
+                forecast_data.model_dump_json(),
+                ex=self.cache_duration
+            )
+            logger.info(f"Cached forecast data for key: {cache_key}")
+            return forecast_data
+
+        except Exception as e:
+            logger.error(f"Error fetching forecast data: {str(e)}")
+            raise WeatherServiceException(str(e))
+
+    async def _refresh_forecast_cache(self, city: str, country_code: Optional[str] = None):
+        try:
+            await self._fetch_and_cache_forecast(city, country_code)
+            logger.info(f"Refreshed forecast cache for {city}")
+        except Exception as e:
+            logger.error(f"Failed to refresh forecast cache for {city}: {str(e)}")

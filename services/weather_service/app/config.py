@@ -1,10 +1,8 @@
 from functools import lru_cache
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional
 from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl, field_validator, Secret
-from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
-from azure.keyvault.secrets import SecretClient
+from pydantic import AnyHttpUrl
 from dotenv import load_dotenv
 
 
