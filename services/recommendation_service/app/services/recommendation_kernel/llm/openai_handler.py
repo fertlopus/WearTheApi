@@ -5,7 +5,7 @@ import json
 import re
 import asyncio
 from .base import LLMHandler
-from .prompt_templates import STYLIST_PROMPT_TEMPLATE, SYSTEM_ROLE
+from .prompt_templates import STYLIST_PROMPT_TEMPLATE, SYSTEM_ROLE, STYLIST_PROMPT_TEMPLATE_CATEGORIZED
 from ....core.exceptions import LLMException
 import logging
 from tenacity import (retry,
@@ -14,17 +14,12 @@ from tenacity import (retry,
                       retry_if_exception_type)
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    handlers=[logging.StreamHandler()])
 
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Log to the console
-    ]
-)
 
 class OpenAIHandler(LLMHandler):
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini", temperature: float = 0.3, max_retries: int = 3,
+    def __init__(self, api_key: str, model: str = "gpt-4o-mini", temperature: float = 1.5, max_retries: int = 3,
                  timeout: float = 30.0, api_version: Optional[str]=None):
         self.api_key = api_key
         self.model = model
@@ -80,6 +75,47 @@ class OpenAIHandler(LLMHandler):
             logger.error(f"Method generate_recommendations failed due to the following error: {str(e)}")
             raise LLMException(f"Failed to generate recommendations: {str(e)}")
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10),
+           retry=retry_if_exception_type((openai.APITimeoutError, openai.APIConnectionError, openai.RateLimitError)))
+    async def generate_categorized_recommendations(self, context: Dict[str, Any], weather_context: Dict[str, Any]
+                                                   ) -> Dict[str, Any]:
+        try:
+            # TODO: Delete this logging for production
+            weather_data = context.get('weather', '')
+            # logger.info(
+            #     f"Passing to the prompt the following weather data via context.get('weather', ''): {weather_data}")
+
+            prompt = STYLIST_PROMPT_TEMPLATE_CATEGORIZED.format(
+                weather=context.get("weather", ""),
+                assets=context.get("assets", []),
+                style_preferences=", ".join(context.get("style_preferences", []))
+            )
+
+            logger.debug(f"Generated prompt: {prompt}")
+
+
+            response = await self._make_async_completion(prompt)
+            recommendation_text = response.choices[0].message.content
+
+            logger.info(f"Raw LLM response: {recommendation_text}")
+
+            try:
+                recommendation_json = self._parse_json_from_text(recommendation_text)
+                logger.debug(f"Parsed JSON: {json.dumps(recommendation_json, indent=2)}")
+                self._validate_categorized_response(recommendation_json)
+                return recommendation_json
+            except json.JSONDecodeError as je:
+                logger.error(f"JSON parsing error: {str(je)}")
+                logger.error(f"Problematic text: {recommendation_text}")
+                raise LLMException(f"Failed to parse LLM response: {str(je)}")
+            except ValueError as ve:
+                logger.error(f"Validation error: {str(ve)}")
+                raise LLMException(f"Invalid response format: {str(ve)}")
+
+        except Exception as e:
+            logger.error(f"Error generating categorized recommendations: {str(e)}")
+            raise LLMException(f"Failed to generate categorized recommendations: {str(e)}")
+
     async def _make_async_completion(self, prompt: str):
         try:
             response = await self.client.chat.completions.create(
@@ -91,7 +127,8 @@ class OpenAIHandler(LLMHandler):
                 temperature=self.temperature,
                 max_tokens=600,
                 n=1,
-                timeout=self.timeout
+                timeout=self.timeout,
+                top_p=0.8
             )
             return response
 
@@ -150,3 +187,39 @@ class OpenAIHandler(LLMHandler):
         text = re.sub(r',\s*\]', ']', text)  # Remove trailing commas before ]
 
         return text
+
+    def _validate_categorized_response(self, response: Dict[str, Any]) -> None:
+        try:
+            if not isinstance(response, dict):
+                raise ValueError(f"Expected dict, got {type(response)}")
+
+            logger.debug(f"Validating response: {json.dumps(response, indent=2)}")
+
+            # Check top-level structure
+            required_fields = ["recommendations", "weather_summary", "style_notes"]
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
+
+            # Validate recommendations
+            recommendations = response["recommendations"]
+            if not isinstance(recommendations, dict):
+                raise ValueError(f"recommendations must be a dict, got {type(recommendations)}")
+
+            # Check categories
+            categories = ["head", "top", "bottom", "footwear"]
+            for category in categories:
+                if category not in recommendations:
+                    raise ValueError(f"Missing category: {category}")
+                if not isinstance(recommendations[category], list):
+                    raise ValueError(f"Category {category} must be a list")
+
+            # Validate description
+            if "description" not in recommendations:
+                raise ValueError("Missing description in recommendations")
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Validation error: {str(e)}")
+            raise ValueError(f"Invalid response structure: {str(e)}")

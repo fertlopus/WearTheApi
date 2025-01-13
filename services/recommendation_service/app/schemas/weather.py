@@ -18,7 +18,11 @@ class WeatherData(BaseModel):
     snow: Optional[float] = Field(None, description="Snow volume aka precipitation mm/h per 1 h")
     date: Optional[int] = Field(None, description="The date of the weather prediction")  # Made optional
     weather_id: Optional[int] = Field(None, description="Weather condition ID")  # Made optional
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    location: Optional[str] = Field(None, description="Location name")
+    country: Optional[str] = Field(None, description="Country code")
+    sunrise: Optional[int] = Field(None, description="Sunrise timestamp")
+    sunset: Optional[int] = Field(None, description="Sunset timestamp")
 
 
 class WeatherConditions(BaseModel):
@@ -30,15 +34,6 @@ class WeatherConditions(BaseModel):
     snow: Optional[float] = Field(0.0, description="Snow volume")
     location: str = Field(..., description="Location name")
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp of weather reading")
-
-    @model_validator(mode='after')
-    def validate_precipitation(self) -> 'WeatherConditions':
-        """Validate that rain and snow are not present simultaneously"""
-        if (self.rain or 0) > 0 and (self.snow or 0) > 0:
-            raise ValueError(
-                "Cannot have both rain and snow precipitation simultaneously"
-            )
-        return self
 
     class Config:
         use_enum_values = True

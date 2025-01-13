@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from pydantic import model_validator
 from datetime import datetime
+from .weather import WeatherData
 
 
 class OutfitRecommendation(BaseModel):
@@ -42,3 +43,33 @@ class RecommendationResponse(BaseModel):
         if not 1 <= len(values.recommendations) <= 5:
             raise ValueError("Number of recommendations must be between 1 and 10")
         return values
+
+
+class CustomRecommendationRequest(BaseModel):
+    """Request model. for the custom weather-based recommendations"""
+    weather_data: WeatherData
+    gender: Optional[str] = Field("unisex", description="Preferred gender model for the outfits")
+    preferred_styles: Optional[List[str]] = Field(None, description="Array of the preferred styles for the outfits")
+    preferred_colors: Optional[List[str]] = Field(None, description="Array of preferred colors for the outfits")
+    fit_preferences: Optional[str] = Field(None, description="Array of preferred fit of outfits")
+
+
+class CategorizedOutfitRecommendation(BaseModel):
+    """Categorized recommendations response model"""
+    # Outfit parts
+    head: List[str] = Field(..., description="Ranked head outfit items, best matches first")
+    top: List[str] = Field(..., description="Ranked top outfit items, best matches first")
+    bottom: List[str] = Field(..., description="Ranked bottom outfit items, best matches first")
+    footwear: List[str] = Field(..., description="Ranked footwear outfit items, best matches first")
+
+    # Additional fields
+    description: str = Field(None, description="Overall style notes and guidance")
+    additional_notes: Optional[str] = Field(None, description="Weather-specific suggestions to outfits")
+
+
+class CategorizedRecommendationResponse(BaseModel):
+    """Response model for categorized recommendations endpoint"""
+    recommendations: CategorizedOutfitRecommendation
+    weather_summary: str = Field(..., description="Summary of weather conditions")
+    style_notes: str = Field(..., description="Additional styling notes and suggestions")
+    generated_at: datetime = Field(default_factory=datetime.utcnow, description="Generated at")

@@ -1,7 +1,4 @@
-from typing import Optional
-from pathlib import Path
-
-import aioredis
+from typing import Optional, Union
 from fastapi import Depends
 from app.config import Settings, get_settings
 from app.services.recommendation_kernel.engine import RecommendationEngine
@@ -9,19 +6,13 @@ from app.services.recommendation_kernel.retrieval.json_retriever import JsonAsse
 from app.services.recommendation_kernel.llm.openai_handler import OpenAIHandler
 from app.services.weather_client import WeatherClient
 from app.utils.redis_cache import AsyncRedisCache
-from openai import api_version
 import re
 import logging
 
 logger = logging.getLogger(__name__)
 
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Log to the console
-    ]
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    handlers=[logging.StreamHandler()])
 
 
 async def get_asset_retriever(settings: Settings = Depends(get_settings)):

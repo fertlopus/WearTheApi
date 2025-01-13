@@ -1,13 +1,12 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import logging
-import json
 import hashlib
-from fastapi.encoders import jsonable_encoder
-from pydantic.v1.json import pydantic_encoder
 
-from ...schemas.recommendations import OutfitRecommendation, RecommendationResponse
-from ...schemas.weather import WeatherConditions
+
+from ...schemas.recommendations import (OutfitRecommendation, RecommendationResponse,
+                                        CategorizedRecommendationResponse, CategorizedOutfitRecommendation)
+from ...schemas.weather import WeatherConditions, WeatherData
 from ...schemas.assets import AssetItem
 from ...core.exceptions import RecommendationServiceException
 from .retrieval.json_retriever import JsonAssetRetriever
@@ -15,14 +14,9 @@ from .llm.base import LLMHandler
 
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    handlers=[logging.StreamHandler()])
 
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Log to the console
-    ]
-)
 
 class RecommendationEngine:
     """Orchestrates the recommendation process."""
@@ -105,6 +99,8 @@ class RecommendationEngine:
             # Prepare context for LLM
             assets_json = [item.model_dump_json() for item in filtered_assets]
 
+            logger.info(f"The following will be putted as the outfits context: {str(assets_json)}")
+
             context = {
                 "weather": weather_conditions.model_dump_json(),
                 "assets": assets_json,
@@ -136,6 +132,50 @@ class RecommendationEngine:
             logger.error(f"Error generating recommendations: {str(e)}")
             raise RecommendationServiceException(str(e))
 
+    async def get_categorized_recommendations(self, weather_conditions: WeatherData,
+                                              user_preferences: Optional[Dict[str, Any]] = None
+                                              ) -> CategorizedRecommendationResponse:
+        try:
+            await self.asset_retriever.initialize()
+            # logger.info(f"Processing categorized recommendations for weather: {weather_conditions}")
+            # logger.info(f"User preferences: {user_preferences}")
+
+            filtered_assets = await self.asset_retriever.retrieve_assets(weather_conditions=weather_conditions,
+                                                                         filters=user_preferences)
+            if not filtered_assets:
+                logger.warning("No assets found matching the conditions")
+                raise RecommendationServiceException("No suitable assets found for the given conditions")
+
+            assets_json = [item.model_dump_json() for item in filtered_assets]
+
+            logger.info(f"filtered assets: {filtered_assets}")
+
+            context = {
+                "weather": weather_conditions.model_dump_json(),
+                "assets": assets_json,
+                "style_preferences": user_preferences.get("styles", []) if user_preferences else []
+            }
+
+            logger.info("Generating categorized recommendations using LLM")
+            llm_response = await self.llm_handler.generate_categorized_recommendations(context=context,
+                                                                                       weather_context={})
+
+            return CategorizedRecommendationResponse(
+                recommendations=CategorizedOutfitRecommendation(
+                    head=llm_response["recommendations"]["head"],
+                    top=llm_response["recommendations"]["top"],
+                    bottom=llm_response["recommendations"]["bottom"],
+                    footwear=llm_response["recommendations"]["footwear"],
+                    description=llm_response["recommendations"]["description"],
+                    additional_notes=llm_response["recommendations"].get("additional_notes")
+                ),
+                weather_summary=llm_response["weather_summary"],
+                style_notes=llm_response["style_notes"]
+            )
+
+        except Exception as e:
+            logger.error(f"Error generating categorized recommendations: {str(e)}")
+            raise RecommendationServiceException(str(e))
 
     def _generate_cache_key(self,weather_conditions: WeatherConditions, user_preferences: Dict[str, Any]) -> str:
         """Generate unique cache key based on input parameters."""
@@ -153,7 +193,6 @@ class RecommendationEngine:
             "gender": user_preferences.get("gender", "unisex"),
             "fit_preference": user_preferences.get("fit", "normal")
         }
-
 
     def _process_llm_recommendations(self, llm_output: List[Dict[str, Any]]) -> List[OutfitRecommendation]:
         """Process and validate LLM recommendations."""

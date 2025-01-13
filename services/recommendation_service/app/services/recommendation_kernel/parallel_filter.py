@@ -4,24 +4,17 @@ from concurrent.futures import ThreadPoolExecutor
 import logging
 from functools import partial
 from ...schemas.assets import AssetItem
-from ...schemas.weather import WeatherConditions
+from ...schemas.weather import WeatherConditions, WeatherData
 from ...core.exceptions import ValidationException
 
 
 logger = logging.getLogger(__name__)
-
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Log to the console
-    ]
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    handlers=[logging.StreamHandler()])
 
 
 class ParallelFilterSystem:
     """Optimized parallel filtering system for assets."""
-
     def __init__(self, max_workers: Optional[int] = None):
         self.max_workers = max_workers or min(32, (asyncio.get_event_loop().get_default_executor()._max_workers))
         self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
@@ -92,19 +85,15 @@ class ParallelFilterSystem:
     def _matches_weather_conditions(self, asset: AssetItem, weather: WeatherConditions) -> bool:
         """Optimized weather condition matching."""
         try:
-            # Temperature check with early termination
-            temp = int(weather.temperature)
-            if not (int(asset.temp_range.temperature_min) <= temp <= int(asset.temp_range.temperature_max)):
+            # Temperature check
+            temp = float(weather.temperature)
+            min_temp = float(asset.temp_range.temperature_min)
+            max_temp = float(asset.temp_range.temperature_max)
+
+            logger.debug(f"Checking temperature range: {min_temp} <= {temp} <= {max_temp}")
+
+            if not (min_temp <= temp <= max_temp):
                 return False
-
-            # # Rain check with early termination
-            # if weather.rain > 0.0 and asset.rain == "no":
-            #     return False
-            #
-            # # Snow check with early termination
-            # if weather.snow > 0.0 and asset.snow == "no":
-            #     return False
-
             return True
 
         except Exception as e:

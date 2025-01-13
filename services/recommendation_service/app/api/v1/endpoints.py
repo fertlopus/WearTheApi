@@ -3,21 +3,16 @@ from typing import Optional, List
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
-from app.schemas.recommendations import RecommendationResponse
-from app.schemas.weather import WeatherConditions
+from app.schemas.recommendations import (RecommendationResponse,
+                                         CategorizedRecommendationResponse, CustomRecommendationRequest)
 from app.services.recommendation_kernel.engine import RecommendationEngine
 from app.dependencies import get_recommendation_engine
 import logging
 
 logger = logging.getLogger(__name__)
-
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", handlers=[
         logging.StreamHandler()  # Log to the console
-    ]
-)
+    ])
 router = APIRouter()
 
 
@@ -60,7 +55,6 @@ async def get_recommendations_complex(request: RecommendationRequest,
         raise HTTPException(status_code=500, detail="Failed to generate recommendations.")
 
 
-
 @router.post("/recommendations/simple", response_model=RecommendationResponse)
 async def get_recommendations(location: str, engine: RecommendationEngine = Depends(get_recommendation_engine)) -> RecommendationResponse:
     """
@@ -91,3 +85,31 @@ async def health_check():
     """Health check endpoint"""
     logger.info("Health check endpoint triggered.")
     return {"status": "healthy"}
+
+
+@router.post("/recommendations/custom", response_model=CategorizedRecommendationResponse)
+async def get_custom_recommendations(request: CustomRecommendationRequest,
+                                     engine: RecommendationEngine = Depends(get_recommendation_engine)
+                                     ) -> CategorizedRecommendationResponse:
+    try:
+        logger.info("Processing custom recommendation request")
+        # Prepare user preferences
+        user_preferences = {
+            "gender": request.gender,
+            "styles": [style for style in (request.preferred_styles or []) if style],
+            "colors": [color for color in (request.preferred_colors or []) if color],
+            "fit": request.fit_preferences if request.fit_preferences else None
+        }
+
+        # Remove None values
+        user_preferences = {k: v for k, v in user_preferences.items() if v}
+        logger.info(f"User preferences: {user_preferences}")
+
+        return await engine.get_categorized_recommendations(
+            weather_conditions=request.weather_data,
+            user_preferences=user_preferences if user_preferences else None
+        )
+
+    except Exception as e:
+        logger.error(f"Error in custom recommendations: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate custom recommendations: {str(e)}")

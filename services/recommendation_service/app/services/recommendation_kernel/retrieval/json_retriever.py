@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 import  asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -14,14 +14,8 @@ from ....services.recommendation_kernel.filters import PreferenceFilter
 
 
 logger = logging.getLogger(__name__)
-
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Log to the console
-    ]
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    handlers=[logging.StreamHandler()])
 
 
 class JsonAssetRetriever(BaseRetriever):
@@ -73,7 +67,7 @@ class JsonAssetRetriever(BaseRetriever):
         with open(self.asset_path) as f:
             return json.load(f)
 
-    async def retrieve_assets(self, weather_conditions: WeatherConditions,
+    async def retrieve_assets(self, weather_conditions: Union[WeatherConditions, WeatherData],
                               filters: Optional[Dict[str, Any]]=None) -> List[AssetItem]:
         """Retrieve assets based on weather conditions and filters"""
         try:
@@ -91,11 +85,6 @@ class JsonAssetRetriever(BaseRetriever):
 
             logger.debug(f"Retrieved {len(filtered_assets)} assets weather conditions")
             logger.info(f"After filtering on weather conditions: {len(filtered_assets)}")
-
-            # if filters:
-            #     preference_filter = PreferenceFilter()
-            #     filtered_assets = preference_filter.filter_assets(filtered_assets, filters=filters)
-            #     logger.info(f"Retrieved {len(filtered_assets)} assets preference filter conditions")
 
             logger.debug(f"Retrieved {len(filtered_assets)} assets matching conditions")
             return filtered_assets
@@ -140,54 +129,12 @@ class JsonAssetRetriever(BaseRetriever):
                 logger.info(f"Asset {asset.asset_name} failed temperature check. Temp: {weather.temperature}, "
                              f"Range: {asset.temp_range}")
                 return False
-
-            # Weather condition check (normalize descriptions)
-            # TODO: mismatches between API weather group: Clouds and our defined e.g. Broken Clouds
-            #if not any(cond in weather.description.weather_group.lower() for cond in asset.condition):
-            #    print(f"Asset {asset.asset_name} failed condition check. "
-            #                 f"Weather Group: {weather.description.weather_group}, Asset Conditions: {asset.condition}")
-            #    return False
-
-            # Rain check
-            # if weather.rain > 0.0 and asset.rain == "no":
-            #     logger.info(
-            #         f"Asset {asset.asset_name} excluded due to rain conditions"
-            #         f"Asset Rain parameter: {asset.rain} and Weather Rain parameter: {weather.rain}"
-            #     )
-            #     return False
-            # elif weather.rain == 0.0 and asset.rain == "yes":
-            #     logger.info(
-            #         f"Asset {asset.asset_name} excluded due to its designed for rainy condition, but it is not rainy. "
-            #         f"Weather Rain: {weather.rain}, Asset Rain Label: {asset.rain}"
-            #     )
-            #     return False
-
-            # Snow check
-            # if weather.snow > 0 and asset.snow == "no":
-            #     logger.info(
-            #         f"Asset '{asset.asset_name}' excluded due to snow conditions. "
-            #         f"Weather Snow: {weather.snow}, Asset Snow Label: {asset.snow}"
-            #     )
-            #     return False
-            # elif weather.snow == 0 and asset.snow == "yes":
-            #     logger.info(
-            #         f"Asset {asset.asset_name} excluded because it is designed for snowy conditions, but it's snowless. "
-            #         f"Weather Snow: {weather.snow}, Asset Snow Label: {asset.snow}"
-            #     )
-            #     return False
-            # # If all checks pass, the asset matches
             return True
 
         except Exception as e:
             logger.error(f"Error in matching weather conditions: {str(e)}")
             return False
 
-    # async def get_asset_by_name(self, asset_name: str) -> Optional[AssetItem]:
-    #     """Get specific asset by name"""
-    #     try:
-    #         return self._asset_index.get(asset_name)
-    #     except KeyError as e:
-    #         logger.error(f"Asset {asset_name} not found in the asset catalog: {str(e)}")
 
     def _matches_filters(self, asset: AssetItem, filters: Dict[str, Any]) -> bool:
         """Check if asset matches conditional filters defined"""
