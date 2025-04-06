@@ -2,7 +2,7 @@ import pandas as pd
 from pprint import pprint
 import json
 
-file_path = "./raw/ClothingImagesDBextended.csv"
+file_path = "./raw/ClothingImages_all.csv"
 clothing_data = pd.read_csv(file_path)
 
 

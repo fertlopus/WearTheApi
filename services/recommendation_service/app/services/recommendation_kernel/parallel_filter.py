@@ -105,7 +105,7 @@ class ParallelFilterSystem:
         try:
             # Gender check
             if "gender" in filters and filters["gender"] != "unisex":
-                if asset.gender != filters["gender"]:
+                if asset.gender != filters["gender"] and asset.gender != "unisex":
                     return False
 
             # Style check
